@@ -1330,9 +1330,9 @@ function field_group_element_info() {
 }
 
 /**
- * Implements hook_library().
+ * Implements hook_library_info().
  */
-function field_group_library() {
+function field_group_library_info() {
 
   $path = backdrop_get_path('module', 'field_group');
   // Horizontal Tabs.
