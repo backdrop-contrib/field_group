@@ -51,7 +51,7 @@ function field_group_update_1000() {
 /**
  * Update Field Group module weight.
  */
-function field_group_update_1000() {
+function field_group_update_1001() {
   db_update('system')
     ->fields(array('weight' => 5))
     ->condition('name', 'field_group')
