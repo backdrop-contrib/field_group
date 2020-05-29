@@ -809,42 +809,40 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
     }
   }
 
-  // Add additional settings vertical tab.
-  if (!isset($form['additional_settings'])) {
-    $form['additional_settings'] = array(
-      '#type' => 'vertical_tabs',
-      '#theme_wrappers' => array('vertical_tabs'),
-      '#prefix' => '<div>',
-      '#suffix' => '</div>',
-      '#tree' => TRUE,
-    );
-    $form['#attached']['js'][] = 'core/misc/form.js';
-    $form['#attached']['js'][] = 'core/misc/collapse.js';
-  }
+  $vertical_tabs = isset($form['additional_settings']);
 
   // Add extra guidelines for webmaster.
-  $form['additional_settings']['field_group'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Fieldgroups'),
-    '#description' => t('<p class="fieldgroup-help">Fields can be dragged into groups with unlimited nesting. Each fieldgroup format comes with a configuration form, specific for that format type.<br />Note that some formats come in pair. These types have a html wrapper to nest its fieldgroup children. E.g. Place accordion items into the accordion, vertical tabs in vertical tab group and horizontal tabs in the horizontal tab group. There is one exception to this rule, you can use a vertical tab without a wrapper when the additional settings tabs are available. E.g. node forms.</p>'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#parents' => array('additional_settings'),
+  $field_group = array(
+    'field_group' => array(
+      '#type' => 'fieldset',
+      '#title' => t('Fieldgroups'),
+      '#description' => t('<p class="fieldgroup-help">Fields can be dragged into groups with unlimited nesting. Each fieldgroup format comes with a configuration form, specific for that format type.<br />Note that some formats come in pair. These types have a html wrapper to nest its fieldgroup children. E.g. Place accordion items into the accordion, vertical tabs in vertical tab group and horizontal tabs in the horizontal tab group. There is one exception to this rule, you can use a vertical tab without a wrapper when the additional settings tabs are available. E.g. node forms.</p>'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    ),
   );
-  $form['additional_settings']['field_group']['fieldgroup_clone'] = array(
+  if ($vertical_tabs) {
+    $field_group['field_group']['#parents'] = array('additional_settings');
+  }
+  $field_group['field_group']['fieldgroup_clone'] = array(
     '#title' => t('Select source view mode or form'),
     '#description' => t('Clone fieldgroups from selected view mode to the current display'),
     '#type' => 'select',
     '#options' => $view_modes,
     '#default_value' => 'none'
   );
-  $form['additional_settings']['field_group']['fieldgroup_submit'] = array(
+  $field_group['field_group']['fieldgroup_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Clone'),
     '#validate' => array('field_group_field_ui_clone_field_groups_validate'),
     '#submit' => array('field_group_field_ui_clone_field_groups')
   );
-
+  if ($vertical_tabs) {
+    $form['additional_settings'] = array_merge($form['additional_settings'], $field_group);
+  }
+  else {
+    $form = array_merge($form, $field_group);
+  }
 }
 
 /**
