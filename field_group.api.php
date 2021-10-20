@@ -109,7 +109,7 @@ function hook_field_group_formatter_info() {
  * Implements hook_field_group_format_settings().
  *
  * Defines configuration widget for the settings on a field group
- * formatter. Eache formatter can have different elements and storage.
+ * formatter. Each formatter can have different elements and storage.
  *
  * @params Object $group The group object.
  * @return Array $form The form element for the format settings.
@@ -206,7 +206,7 @@ function hook_field_group_format_settings($group) {
 /**
  * Implements hook_field_group_pre_render().
  *
- * This function gives you the oppertunity to create the given
+ * This function gives you the opportunity to create the given
  * wrapper element that can contain the fields.
  * In the example beneath, some variables are prepared and used when building the
  * actual wrapper element. All elements in backdrop fapi can be used.
