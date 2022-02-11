@@ -26,7 +26,7 @@ function field_group_config_info() {
 function field_group_config_label($config, $config_name) {
   list($group_name, $entity_type_name, $bundle, $mode) = explode('.', str_replace('field_group.field_group.', '', $config_name));
   $entity_type = entity_get_info($entity_type_name);
-  $entity_label = $entity_type['label'];
+  $entity_label = isset($entity_type['label']) ? $entity_type['label'] : $entity_type;
   $bundle_label = isset($entity_type['bundles'][$bundle]['label']) ? $entity_type['bundles'][$bundle]['label'] : $bundle;
 
   return $entity_label . ' - ' . $bundle_label . ' - Mode: ' . $mode . ' - ' . $group_name;
