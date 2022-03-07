@@ -1470,11 +1470,21 @@ function field_group_field_extra_fields() {
  * Implements hook_field_attach_rename_bundle().
  */
 function field_group_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new) {
-  db_query('UPDATE {field_group} SET bundle = :bundle WHERE bundle = :old_bundle AND entity_type = :entity_type', array(
-    ':bundle' => $bundle_new,
-    ':old_bundle' => $bundle_old,
-    ':entity_type' => $entity_type,
-  ));
+
+  $list = field_group_read_groups(array('bundle' => $bundle_old, 'entity_type' => $entity_type));
+
+  // Create a new and delete the old entity's entry from field_group of all entities.
+  if (isset($list[$entity_type], $list[$entity_type][$bundle_old])) {
+    foreach ($list[$entity_type][$bundle_old] as $group_mode => $groups) {
+      foreach ($groups as $group) {
+        $group->bundle = $bundle_new;
+        field_group_group_save($group);
+        $group->bundle = $bundle_old;
+        field_group_group_delete($group);
+      }
+    }
+  }
+
 }
 
 /**
