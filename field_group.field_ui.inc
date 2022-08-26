@@ -218,6 +218,73 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
       '#links' => $operations,
     );
 
+    if ($form_state['formatter_settings_edit'] == $name) {
+      $table[$name]['format']['#cell_attributes'] = array('colspan' => $display_overview ? 3 : 2);
+      $table[$name]['format']['format_settings'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('field-formatter-settings-edit-form')),
+        '#parents' => array('fields', $name, 'format_settings'),
+        '#weight' => -5,
+        'label' => array(
+          '#markup' => t('Field group format:') . ' <span class="formatter-name">' . $group->format_type . '</span>',
+        ),
+        // Create a settings form where hooks can pick in.
+        'settings' => $settings,
+        'actions' => array(
+          '#type' => 'actions',
+          'save_settings' => $base_button + array(
+            '#type' => 'submit',
+            '#name' => $name . '_formatter_settings_update',
+            '#value' => t('Update'),
+            '#op' => 'update',
+          ),
+          'cancel_settings' => $base_button + array(
+            '#type' => 'submit',
+            '#name' => $name . '_formatter_settings_cancel',
+            '#value' => t('Cancel'),
+            '#op' => 'cancel',
+            // Do not check errors for the 'Cancel' button.
+            '#limit_validation_errors' => array(),
+          ),
+        ),
+      );
+      $table[$name]['#attributes']['class'][] = 'field-formatter-settings-editing';
+      $table[$name]['format']['type']['#attributes']['class'] = array('element-invisible');
+    }
+    else {
+      // After saving, the settings are updated here as well. First we create
+      // the element for the table cell.
+      $table[$name]['settings_summary'] = array('#markup' => '');
+      if (!empty($group->format_settings)) {
+        $table[$name]['settings_summary'] = field_group_format_settings_summary($name, $group);
+      }
+
+      $destination = _field_ui_bundle_admin_path($form['#entity_type'], $form['#bundle']);
+      $operations = array(
+        'configure' => array(
+          'title' => t('Configure'),
+          'href' => $params->admin_path . '/groups/' . $name . '/configure/form',
+          'query' => array('destination' => $destination . '/fields'),
+        ),
+        'delete' => array(
+          'title' => t('Delete'),
+          'href' => $params->admin_path . '/groups/' . $name . '/delete/form',
+          'query' => array('destination' => $destination . '/fields'),
+        ),
+      );
+      if ($display_overview) {
+        $operations['configure']['href'] = $params->admin_path . '/groups/' . $name . '/configure/' . $params->mode;
+        $operations['configure']['query']['destination'] = $destination . '/display/' . $params->mode;
+        $operations['delete']['href'] = $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode;
+        $operations['delete']['query']['destination'] = $destination . '/display/' . $params->mode;
+      }
+
+      // Add the operations.
+      $table[$name]['operations'] = array(
+        '#type' => 'dropbutton',
+        '#links' => $operations,
+      );
+    }
   }
 
   // Additional row: add new group.
@@ -791,26 +858,12 @@ function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form
  */
 function field_group_configure_form($form, &$form_state, $group, $view_mode = 'form') {
   $form['#group'] = $group;
-  $form_state['#group'] = $group;
   $form['#entity_type'] = $group->entity_type;
   $form['#bundle'] = $group->bundle;
   $form['#view_mode'] = $view_mode;
 
-  $form['label'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Field group label'),
-    '#default_value' => $group->label,
-    '#weight' => -5,
-    '#element_validate' => array('field_group_format_settings_label_validate'),
-  );
-
-  $addition = module_invoke_all('field_group_format_settings', $group);
-  $form += $addition;
-
-  // Give fieldgroup implementations the chance to alter the description.
-  if (!empty($addition['label']['#description'])) {
-    $form['label']['#description'] = $addition['label']['#description'];
-  }
+  $format_settings = module_invoke_all('field_group_format_settings', $group);
+  $form['instance_settings'] = $format_settings['instance_settings'];
 
   $form['actions'] = array(
     '#type' => 'actions'
@@ -833,11 +886,10 @@ function field_group_configure_form($form, &$form_state, $group, $view_mode = 'f
  * Submit handler for field_group_configure_form().
  */
 function field_group_configure_form_submit($form, &$form_state) {
+  $form_values = $form_state['values']['instance_settings'];
   $group = $form['#group'];
   $group->mode = $form['#view_mode'];
-  $group->label = $form_state['values']['label'];
-  $group->format_settings['instance_settings'] = $form_state['values']['instance_settings'];
-  $group->format_settings['formatter'] = isset($form_state['values']['formatter']) ? $form_state['values']['formatter'] : '';
+  $group->format_settings['instance_settings'] = $form_values;
 
   field_group_group_save($group, FALSE);
   cache_clear_all('field_groups', 'cache_field');
