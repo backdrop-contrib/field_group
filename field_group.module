@@ -81,6 +81,15 @@ function field_group_menu() {
             'access arguments' => array('administer site configuration'),
           );
 
+          $items["$path/groups/%field_group_menu/configure"] = array(
+            'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
+            'title' => 'Configure',
+            'page callback' => 'backdrop_get_form',
+            'page arguments' => array('field_group_configure_form', $group_position),
+            'type' => MENU_CALLBACK,
+            'file' => 'field_group.field_ui.inc',
+          ) + $access;
+
           $items["$path/groups/%field_group_menu/delete"] = array(
             'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
             'title' => 'Delete',
@@ -276,7 +285,10 @@ function field_group_field_attach_view_alter(&$element, $context) {
 
 /**
  * Implements hook_field_group_format_settings().
- *   If the group has no format settings, default ones will be added.
+ * If the group has no format settings, default ones will be added.
+ *
+ * @param Object $group The group object.
+ * @return Array $form The form element for the format settings.
  */
 function field_group_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -313,7 +325,7 @@ function field_group_field_group_format_settings($group) {
 
   if (isset($formatter['instance_settings']['id'])) {
     $form['instance_settings']['id'] = array(
-      '#title' => t('ID'),
+      '#title' => t('ID attribute'),
       '#type' => 'textfield',
       '#default_value' => isset($group->format_settings['instance_settings']['id']) ? $group->format_settings['instance_settings']['id'] : (isset($formatter['instance_settings']['id']) ? $formatter['instance_settings']['id'] : ''),
       '#weight' => 10,
@@ -531,10 +543,6 @@ function field_group_remove_empty_display_groups(&$element, $groups) {
  */
 function field_group_field_group_format_summary($group) {
 
-  $group_form = module_invoke_all('field_group_format_settings', $group);
-
-  backdrop_alter('field_group_format_settings', $group_form, $group);
-
   $output = '';
   if (isset($group->format_settings['formatter'])) {
     $output .= '<strong>' . $group->format_type . '</strong> ' . $group->format_settings['formatter'] . '';
@@ -548,15 +556,6 @@ function field_group_field_group_format_summary($group) {
       }
 
       $output .= '<strong>' . $key . '</strong> ';
-
-      if (isset($group_form['instance_settings'], $group_form['instance_settings'][$key]['#options'])) {
-        if (is_array($value)) {
-          $value = implode(', ', array_filter($value));
-        }
-        else {
-          $value = $group_form['instance_settings'][$key]['#options'][$value];
-        }
-      }
 
       // Shorten the string.
       if (backdrop_strlen($value) > 38) {

@@ -245,29 +245,31 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
       if (!empty($group->format_settings)) {
         $table[$name]['settings_summary'] = field_group_format_settings_summary($name, $group);
       }
-      // Add the configure button.
-      $table[$name]['settings_edit'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('field-formatter-settings-edit-wrapper')),
-      );
-      $table[$name]['settings_edit']['edit'] = $base_button + array(
-        '#type' => 'submit',
-        '#name' => $name . '_group_settings_edit',
-        '#value' => t('Configure'),
-        '#attributes' => array('class' => array('field-formatter-settings-edit button-secondary'), 'alt' => t('Configure')),
-        '#op' => 'edit',
-        // Do not check errors for the 'Configure' button.
-        '#limit_validation_errors' => array(),
+
+      $destination = _field_ui_bundle_admin_path($form['#entity_type'], $form['#bundle']);
+      $operations = array(
+        'configure' => array(
+          'title' => t('Configure'),
+          'href' => $params->admin_path . '/groups/' . $name . '/configure/form',
+          'query' => array('destination' => $destination . '/fields'),
+        ),
+        'delete' => array(
+          'title' => t('Delete'),
+          'href' => $params->admin_path . '/groups/' . $name . '/delete/form',
+          'query' => array('destination' => $destination . '/fields'),
+        ),
       );
       if ($display_overview) {
-        $table[$name]['settings_edit']['delete'] = array(
-          '#markup' => l(t('Delete'), $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode),
-        );
+        $operations['configure']['href'] = $params->admin_path . '/groups/' . $name . '/configure/' . $params->mode;
+        $operations['configure']['query']['destination'] = $destination . '/display/' . $params->mode;
+        $operations['delete']['href'] = $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode;
+        $operations['delete']['query']['destination'] = $destination . '/display/' . $params->mode;
       }
-    }
-    if (!$display_overview) {
-      $table[$name]['settings_edit']['delete'] = array(
-        '#markup' => l(t('Delete'), $params->admin_path . '/groups/' . $name . '/delete/form'),
+
+      // Add the operations.
+      $table[$name]['operations'] = array(
+        '#type' => 'dropbutton',
+        '#links' => $operations,
       );
     }
   }
@@ -820,13 +822,7 @@ function field_group_field_info_max_weight($entity_type, $bundle, $context) {
 function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form') {
 
   $form['#group'] = $group;
-  $admin_path = _field_ui_bundle_admin_path($group->entity_type, $group->bundle);
-  if ($view_mode == 'form') {
-    $admin_path .= '/fields';
-  }
-  else {
-    $admin_path .= '/display/' . $view_mode;
-  }
+  $admin_path = _field_group_get_admin_path($group->entity_type, $group->bundle, $view_mode);
   $form['#redirect'] = array($admin_path);
   $output = confirm_form($form,
     t('Are you sure you want to delete the group %group?', array('%group' => t($group->label))),
@@ -839,34 +835,70 @@ function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form
 }
 
 /**
- * Remove group from bundle.
- *
- * @param array $form
- *   An associative array containing the structure of the form.
- * @param array $form_state
- *   An associative array containing the current state of the form, which is
- *   passed by reference.
- *
- * @todo we'll have to reset all view mode settings.
+ * Menu callback; present a form for configuring a group.
  */
-function field_group_delete_form_submit($form, &$form_state) {
+function field_group_configure_form($form, &$form_state, $group, $view_mode = 'form') {
+  $form['#group'] = $group;
+  $form['#entity_type'] = $group->entity_type;
+  $form['#bundle'] = $group->bundle;
+  $form['#view_mode'] = $view_mode;
 
-  $group = $form['#group'];
-  $bundle = $group->bundle;
-  $entity_type = $group->entity_type;
-  $group->mode = $form_state['build_info']['args'][1];
+  $format_settings = module_invoke_all('field_group_format_settings', $group);
+  $form['instance_settings'] = $format_settings['instance_settings'];
 
-  $bundles = field_info_bundles();
-  $bundle_label = $bundles[$entity_type][$bundle]['label'];
+  $form['actions'] = array(
+    '#type' => 'actions'
+  );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Update',
+  );
 
-  field_group_group_delete($group);
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => 'Cancel',
+    '#href' => _field_group_get_admin_path($group->entity_type, $group->bundle, $view_mode),
+  );
 
-  backdrop_set_message(t('The group %group has been deleted from the %type content type.', array('%group' => t($group->label), '%type' => $bundle_label)));
-
-  // Redirect.
-  $form_state['redirect'] = $form['#redirect'];
+  return $form;
 }
 
+/**
+ * Submit handler for field_group_configure_form().
+ */
+function field_group_configure_form_submit($form, &$form_state) {
+  $form_values = $form_state['values']['instance_settings'];
+  $group = $form['#group'];
+  $group->mode = $form['#view_mode'];
+  $group->format_settings['instance_settings'] = $form_values;
+
+  field_group_group_save($group, FALSE);
+  cache_clear_all('field_groups', 'cache_field');
+
+  $admin_path = _field_group_get_admin_path($form['#entity_type'], $form['#bundle'], $form['#view_mode']);
+  $form_state['redirect'] = $admin_path;
+}
+
+/**
+ * Helper function to return the admin path for field UI.
+ *
+ * @param string $entity_type
+ * @param string $bundle
+ * @param string $view_mode
+ *
+ * @return string
+ *   System path pointing to the field listing for the requsted view mode.
+ */
+function _field_group_get_admin_path($entity_type, $bundle, $view_mode) {
+  $admin_path = _field_ui_bundle_admin_path($entity_type, $bundle);
+  if ($view_mode == 'form') {
+    $admin_path .= '/fields';
+  } else {
+    $admin_path .= '/display/' . $view_mode;
+  }
+
+  return $admin_path;
+}
 
 /**
  * Create vertical tabs.
