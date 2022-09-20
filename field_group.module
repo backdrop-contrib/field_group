@@ -81,6 +81,15 @@ function field_group_menu() {
             'access arguments' => array('administer site configuration'),
           );
 
+          // Attempt to provide a title instead of just "configure"
+          $items["$path/groups/%field_group_menu"] = array(
+            'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
+            'title callback' => 'field_group_menu_title',
+            'title arguments' => array($group_position),
+            'page callback' => 'backdrop_get_form',
+            'page arguments' => array('field_group_configure_form', $group_position),
+            'file' => 'field_group.field_ui.inc',
+          ) + $access;
           $items["$path/groups/%field_group_menu/configure"] = array(
             'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
             'title' => 'Configure',
@@ -114,6 +123,17 @@ function field_group_menu() {
   }
 
   return $items;
+}
+
+/**
+ * Title callback: Returns the name of a given instance.
+ *
+ * @see field_group_menu()
+ */
+function field_group_menu_title($instance) {
+  debug($instance);
+  //return $instance['label'];
+  return 'configure';
 }
 
 /**
