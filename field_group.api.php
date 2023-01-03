@@ -286,7 +286,8 @@ function hook_field_group_pre_render_alter(&$element, $group, &$form) {
  * expected that when you need this function, you have most likely a very custom
  * case or it is a fix that can be put in field_group core.
  *
- * @param Array $elements by address.
+ * @param array $elements
+ *   Elements by address.
  */
 function hook_field_group_build_pre_render_alter(&$element) {
 

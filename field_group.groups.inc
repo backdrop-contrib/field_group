@@ -909,6 +909,29 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
   }
 }
 
+
+/**
+ * Implements hook_field_group_build_pre_render_alter().
+ */
+function field_group_field_group_build_pre_render_alter(& $element) {
+
+  // Move additional settings to the last multipage pane if configured that way.
+  // Note that multipages MUST be in the root of the form.
+  foreach (element_children($element) as $name) {
+    if (isset($element[$name]['#type']) && $element[$name]['#type'] == 'multipage' && isset($element['additional_settings'])) {
+      $parent_group = $element['#groups'][$name];
+      $move_additional = isset($parent_group->format_settings['instance_settings']['move_additional']) ? $parent_group->format_settings['instance_settings']['move_additional'] : 1;
+      $last_pane = NULL;
+      foreach (element_children($element[$name], TRUE) as $pane) {
+        $last_pane = $pane;
+      }
+      $element[$name][$last_pane]['additional_settings'] = $element['additional_settings'];
+      unset($element['additional_settings']);
+    }
+  }
+
+}
+
 /**
  * Implements hook_field_group_html_classes_alter().
  */
