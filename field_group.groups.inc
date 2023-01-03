@@ -765,6 +765,149 @@ function form_process_multipage($element, &$form_state) {
   return $element;
 }
 
+/**
+ * Implements hook_field_group_format_settings_alter().
+ */
+function field_group_field_group_format_settings_alter(&$form, &$group) {
+  $field_group_types = field_group_formatter_info();
+  $mode = $group->mode == 'form' ? 'form' : 'display';
+  $formatter = $field_group_types[$mode][$group->format_type];
+
+  // Add optional instance_settings.
+  switch ($group->format_type) {
+    case 'html-element':
+      $form['instance_settings']['element'] = array(
+        '#title' => t('Element'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['element']) ? $group->format_settings['instance_settings']['element'] : $formatter['instance_settings']['element'],
+        '#description' => t('E.g. div, section, aside etc.'),
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['show_label'] = array(
+        '#title' => t('Show label'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['show_label']) ? $group->format_settings['instance_settings']['show_label'] : $formatter['instance_settings']['show_label'],
+        '#weight' => 2,
+      );
+
+      $form['instance_settings']['label_element'] = array(
+        '#title' => t('Label element'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : $formatter['instance_settings']['label_element'],
+        '#weight' => 3,
+      );
+
+      $form['instance_settings']['attributes'] = array(
+        '#title' => t('Attributes'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['attributes']) ? $group->format_settings['instance_settings']['attributes'] : $formatter['instance_settings']['attributes'],
+        '#description' => t('E.g. name="anchor"'),
+        '#weight' => 4,
+      );
+      break;
+    case 'div':
+      $form['label']['#description'] = t('Please enter a label for collapsible elements');
+      $form['instance_settings']['show_label'] = array(
+        '#title' => t('Show label'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['show_label']) ? $group->format_settings['instance_settings']['show_label'] : $formatter['instance_settings']['show_label'],
+        '#weight' => 2,
+      );
+      $form['instance_settings']['label_element'] = array(
+        '#title' => t('Label element'),
+        '#type' => 'select',
+        '#options' => array('h2' => t('Header 2'), 'h3' => t('Header 3')),
+        '#default_value' => isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : $formatter['instance_settings']['label_element'],
+        '#weight' => 2,
+      );
+      $form['instance_settings']['effect'] = array(
+        '#title' => t('Effect'),
+        '#type' => 'select',
+        '#options' => array('none' => t('None'), 'blind' => t('Blind')),
+        '#default_value' => isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : $formatter['instance_settings']['effect'],
+        '#weight' => 3,
+      );
+      $form['instance_settings']['speed'] = array(
+        '#title' => t('Speed'),
+        '#type' => 'select',
+        '#options' => array('none' => t('None'), 'slow' => t('Slow'), 'fast' => t('Fast')),
+        '#default_value' => isset($group->format_settings['instance_settings']['speed']) ? $group->format_settings['instance_settings']['speed'] : $formatter['instance_settings']['speed'],
+        '#weight' => 3,
+      );
+      break;
+    case 'html5':
+      $form['instance_settings']['wrapper'] = array(
+        '#title' => t('HTML5 wrapper'),
+        '#type' => 'select',
+        '#options' => array('section' => t('Section'), 'article' => t('Article'), 'header' => t('Header'), 'footer' => t('Footer'), 'aside' => t('Aside')),
+        '#default_value' => isset($group->format_settings['instance_settings']['wrapper']) ? $group->format_settings['instance_settings']['wrapper'] : 'section',
+      );
+      break;
+    case 'fieldset':
+      $form['label']['#description'] = t('Please enter a label for collapsible elements');
+      break;
+    case 'details':
+      $form['label']['#description'] = t('Please enter a label for the summary');
+      $form['instance_settings']['label_element'] = array(
+        '#title' => t('Label element'),
+        '#type' => 'select',
+        '#options' => array('span' => t('Span'), 'strong' => t('Strong'),  'em' => t('Emphasis'), 'h2' => t('Header 2'), 'h3' => t('Header 3')),
+        '#default_value' => isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : $formatter['instance_settings']['label_element'],
+        '#weight' => 2,
+      );
+      break;
+    case 'multipage-group':
+      $form['instance_settings']['page_header'] = array(
+        '#title' => t('Format page title'),
+        '#type' => 'select',
+        '#options' => array(0 => t('None'), 1 => t('Label only'), 2 => t('Step 1 of 10'), 3 => t('Step 1 of 10 [Label]'),),
+        '#default_value' => isset($group->format_settings['instance_settings']['page_header']) ? $group->format_settings['instance_settings']['page_header'] : $formatter['instance_settings']['page_header'],
+        '#weight' => 1,
+      );
+      $form['instance_settings']['page_counter'] = array(
+        '#title' => t('Add a page counter at the bottom'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Format 1 / 10'), 2 => t('The count number only')),
+        '#default_value' => isset($group->format_settings['instance_settings']['page_counter']) ? $group->format_settings['instance_settings']['page_counter'] : $formatter['instance_settings']['page_counter'],
+        '#weight' => 2,
+      );
+      $form['instance_settings']['move_button'] = array(
+        '#title' => t('Move submit button to last multipage'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['move_button']) ? $group->format_settings['instance_settings']['move_button'] : $formatter['instance_settings']['move_button'],
+        '#weight' => 3,
+      );
+      $form['instance_settings']['move_additional'] = array(
+        '#title' => t('Move additional settings to last multipage (if available)'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['move_additional']) ? $group->format_settings['instance_settings']['move_additional'] : $formatter['instance_settings']['move_additional'],
+        '#weight' => 4,
+      );
+    case 'tabs':
+    case 'htabs':
+      break;
+    case 'accordion':
+      $form['instance_settings']['effect'] = array(
+        '#title' => t('Effect'),
+        '#type' => 'select',
+        '#options' => array('none' => t('None'), 'bounceslide' => t('Bounce slide')),
+        '#default_value' => isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : $formatter['instance_settings']['effect'],
+        '#weight' => 2,
+      );
+      break;
+    case 'multipage':
+      break;
+    case 'tab':
+    case 'htab':
+    case 'accordion-item':
+    default:
+  }
+}
 
 /**
  * Implements hook_field_group_html_classes_alter().

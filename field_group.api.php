@@ -372,6 +372,13 @@ function hook_field_group_create_field_group($group) {
 }
 
 /**
+ * Implements hook_field_group_format_settings_alter().
+ */
+function hook_field_group_format_settings_alter(&$form, &$group) {
+  // Alter the group format settings that appear in the summary and form.
+}
+
+/**
  * Implements hook_field_group_html_classes_alter().
  */
 function hook_field_group_html_classes_alter(&$classes, &$group) {
