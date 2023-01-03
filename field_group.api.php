@@ -76,7 +76,7 @@
  * ),
  * @endcode
  *
- * @return $formatters
+ * @return array
  *   A collection of available formatting html controls for form
  *   and display overview type.
  *
@@ -111,8 +111,10 @@ function hook_field_group_formatter_info() {
  * Defines configuration widget for the settings on a field group
  * formatter. Each formatter can have different elements and storage.
  *
- * @params Object $group The group object.
- * @return Array $form The form element for the format settings.
+ * @param object $group
+ *   The group object.
+ * @return array
+ *   The form element for the format settings.
  */
 function hook_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -226,6 +228,7 @@ function hook_field_group_pre_render(&$element, $group, &$form) {
   $view_mode = isset($form['#view_mode']) ? $form['#view_mode'] : 'form';
   $id = $form['#entity_type'] . '_' . $form['#bundle'] . '_' . $view_mode . '_' . $group->group_name;
 
+  $classes = '';
   // Each formatter type can have whole different set of element properties.
   switch ($group->format_type) {
 
@@ -293,13 +296,7 @@ function hook_field_group_build_pre_render_alter(&$element) {
 
   // Example from field_group itself to unset empty elements.
   if ($display) {
-    foreach (element_children($element) as $name) {
-      if (in_array($name, $groups)) {
-        if (field_group_field_group_is_empty($element[$name], $groups)) {
-          unset($element[$name]);
-        }
-      }
-    }
+    field_group_remove_empty_display_groups($element, $groups);
   }
 
   // You might include additional javascript files and stylesheets.
@@ -374,6 +371,12 @@ function hook_field_group_create_field_group($group) {
   // Create extra data depending on the group.
 }
 
+/**
+ * Implements hook_field_group_html_classes_alter().
+ */
+function hook_field_group_html_classes_alter(&$classes, &$group) {
+  // Alter the required or optional classes on a field group.
+}
 
 
 /**
