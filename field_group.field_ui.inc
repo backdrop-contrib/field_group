@@ -384,7 +384,33 @@ function field_group_add_row($name, $parent_options, $params) {
 }
 
 /**
- * Element validator. Label is required for fieldsets that are collapsible.
+ * Creates a form for field_group formatters.
+ * @param Object $group The FieldGroup object.
+ */
+function field_group_format_settings_form(&$group) {
+  $form = array();
+  $form['label'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Field group label'),
+    '#default_value' => $group->label,
+    '#weight' => -5,
+    '#element_validate' => array('field_group_format_settings_label_validate'),
+  );
+  $addition = module_invoke_all('field_group_format_settings', $group);
+
+  backdrop_alter('field_group_format_settings', $addition, $group);
+
+  $form += $addition;
+  // Give fieldgroup implementations the chance to alter the description.
+  if (!empty($addition['label']['#description'])) {
+    $form['label']['#description'] = $addition['label']['#description'];
+  }
+  $form['#validate'] = array('field_group_format_settings_form_validate');
+  return $form;
+}
+
+/**
+ * Validate the label. Label is required for fieldsets that are collapsible.
  */
 function field_group_format_settings_label_validate($element, &$form_state) {
   $values = $form_state['values'];

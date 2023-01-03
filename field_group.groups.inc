@@ -187,12 +187,9 @@ function field_group_theme() {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Fieldset.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_fieldset(&$element, $group, &$form) {
 
@@ -215,12 +212,9 @@ function field_group_pre_render_fieldset(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Details.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_details(&$element, $group, &$form) {
   $label_element = isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : 'span';
@@ -242,12 +236,9 @@ function field_group_pre_render_details(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: HTML element.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_html_element(&$element, $group, &$form) {
   $html_element = isset($group->format_settings['instance_settings']['element']) ? $group->format_settings['instance_settings']['element'] : 'div';
@@ -293,12 +284,9 @@ function field_group_pre_render_html_element(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Div.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_div(&$element, $group, &$form) {
 
@@ -339,12 +327,9 @@ function field_group_pre_render_div(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: HTML5.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_html5(&$element, $group, &$form) {
   $id = !empty($element['#id']) ? ' id="' . $element['#id'] . '"' : '';
@@ -360,12 +345,9 @@ function field_group_pre_render_html5(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Accordion.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_accordion(&$element, $group, &$form) {
 
@@ -385,12 +367,9 @@ function field_group_pre_render_accordion(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Accordion item.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_accordion_item(&$element, $group, &$form) {
 
@@ -411,12 +390,9 @@ function field_group_pre_render_accordion_item(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Horizontal tabs group.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_htabs(&$element, $group, &$form) {
 
@@ -452,12 +428,9 @@ function field_group_pre_render_htabs(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Horizontal tab.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_htab(&$element, $group, &$form) {
 
@@ -479,12 +452,9 @@ function field_group_pre_render_htab(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Multipage group.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_multipage_group(&$element, &$group, &$form) {
 
@@ -513,12 +483,9 @@ function field_group_pre_render_multipage_group(&$element, &$group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Multipage.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_multipage(&$element, $group, &$form) {
 
@@ -544,12 +511,9 @@ function field_group_pre_render_multipage(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Vertical tabs wrapper.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_tabs(&$element, $group, &$form) {
 
@@ -585,12 +549,9 @@ function field_group_pre_render_tabs(&$element, $group, &$form) {
  * Implements field_group_pre_render_<format-type>.
  * Format type: Vertical tab.
  *
- * @param array $element
- *   The field group form element.
- * @param object $group
- *   The Field group object prepared for pre_render.
- * @param array $form
- *   The root element or form.
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
  */
 function field_group_pre_render_tab(&$element, $group, &$form) {
 
@@ -731,13 +692,12 @@ function field_group_library_info() {
  * This function will never be callable from within field_group rendering. Other
  * modules using #type horizontal_tabs will have the benefit of this processor.
  *
- * @param array $element
+ * @param $element
  *   An associative array containing the properties and children of the
  *   fieldset.
- * @param array $form_state
+ * @param $form_state
  *   The $form_state array for the form this horizontal tab widget belongs to.
- *
- * @return array
+ * @return
  *   The processed element.
  */
 function form_process_horizontal_tabs($element, &$form_state) {
@@ -771,13 +731,12 @@ function form_process_horizontal_tabs($element, &$form_state) {
  * This function will never be callable from within field_group rendering. Other
  * modules using #type multipage will have the benefit of this processor.
  *
- * @param array $element
+ * @param $element
  *   An associative array containing the properties and children of the
  *   fieldset.
- * @param array $form_state
+ * @param $form_state
  *   The $form_state array for the form this multipage tab widget belongs to.
- *
- * @return array
+ * @return
  *   The processed element.
  */
 function form_process_multipage($element, &$form_state) {
@@ -954,10 +913,7 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
 /**
  * Implements hook_field_group_build_pre_render_alter().
  */
-function field_group_field_group_build_pre_render_alter(&$element) {
-
-  // Add the default field_group javascript.
-  $element['#attached']['js'][] = backdrop_get_path('module', 'field_group') . '/js/field_groups.js';
+function field_group_field_group_build_pre_render_alter(& $element) {
 
   // Move additional settings to the last multipage pane if configured that way.
   // Note that multipages MUST be in the root of the form.
@@ -974,34 +930,6 @@ function field_group_field_group_build_pre_render_alter(&$element) {
     }
   }
 
-}
-
-/**
- * Implements hook_field_group_field_ui_parent_requirements_alter().
- */
-function field_group_field_group_field_ui_parent_requirements_alter(&$parent_requirements, &$context) {
-  $parent_requirements = array(
-    'multipage' => array(
-      'parent' => 'multipage-group',
-      'message' => 'Each Multipage element needs to have a parent Multipage group element.',
-    ),
-    'htab' => array(
-      'parent' => 'htabs',
-      'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
-    ),
-    'accordion-item' => array(
-      'parent' => 'accordion',
-      'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
-    ),
-  );
-
-  // On display overview tabs need to be checked.
-  if ($context['display_overview']) {
-    $parent_requirements['tab'] = array(
-      'parent' => 'tabs',
-      'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
-    );
-  }
 }
 
 /**

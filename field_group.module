@@ -284,170 +284,13 @@ function field_group_field_attach_view_alter(&$element, $context) {
 }
 
 /**
- * Implements hook_field_group_formatter_info().
- */
-function field_group_field_group_formatter_info() {
-
-  return array(
-    'form' => array(
-      'html-element' => array(
-        'label' => t('HTML element'),
-        'description' => t('This fieldgroup renders the inner content in a HTML element with classes and attributes.'),
-        'instance_settings' => array('element' => 'div', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
-      ),
-      'div' => array(
-        'label' => t('Div'),
-        'description' => t('This fieldgroup renders the inner content in a simple div with the title as legend.'),
-        'format_types' => array('open', 'collapsible', 'collapsed'),
-        'instance_settings' => array('description' => '', 'show_label' => 1, 'label_element' => 'h3', 'effect' => 'none', 'speed' => 'fast', 'classes' => '', 'required_fields' => 1, 'id' => ''),
-        'default_formatter' => 'open',
-      ),
-      'html5' => array(
-        'label' => t('HTML5'),
-        'description' => t('This fieldgroup renders the inner content in a semantic HTML5 wrapper'),
-        'instance_settings' => array('wrapper' => '', 'classes' => '', 'id' => ''),
-      ),
-      'fieldset' => array(
-        'label' => t('Fieldset'),
-        'description' => t('This fieldgroup renders the inner content in a fieldset with the title as legend.'),
-        'format_types' => array('open', 'collapsible', 'collapsed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1, 'id' => ''),
-        'default_formatter' => 'collapsible',
-      ),
-      'details' => array(
-        'label' => t('Details'),
-        'description' => t('This fieldgroup renders the inner content in a Details element with the title as summary.'),
-        'format_types' => array('open', 'closed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1, 'id' => '', 'label_element' => 'span'),
-        'default_formatter' => 'closed',
-      ),
-      'tabs' => array(
-        'label' => t('Vertical tabs group'),
-        'description' => t('This fieldgroup renders child groups in its own vertical tabs wrapper.'),
-        'instance_settings' => array('classes' => '', 'id' => ''),
-      ),
-      'tab' => array(
-        'label' => t('Vertical tab'),
-        'description' => t('This fieldgroup renders the content in a fieldset, part of vertical tabs group.'),
-        'format_types' => array('open', 'closed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1),
-        'default_formatter' => 'closed',
-      ),
-      'htabs' => array(
-        'label' => t('Horizontal tabs group'),
-        'description' => t('This fieldgroup renders child groups in its own horizontal tabs wrapper.'),
-        'instance_settings' => array('classes' => '', 'id' => ''),
-      ),
-      'htab' => array(
-        'label' => t('Horizontal tab'),
-        'format_types' => array('open', 'closed'),
-        'description' => t('This fieldgroup renders the content in a fieldset, part of horizontal tabs group.'),
-        'default_formatter' => 'closed',
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1),
-      ),
-      'multipage-group' => array(
-        'label' => t('Multipage group'),
-        'description' => t('This fieldgroup renders groups on separate pages.'),
-        'instance_settings' => array('classes' => '', 'page_header' => 3, 'move_additional' => 1, 'page_counter' => 1, 'move_button' => 0),
-      ),
-      'multipage' => array(
-        'label' => t('Multipage'),
-        'format_types' => array('start', 'no-start'),
-        'description' => t('This fieldgroup renders the content in a page.'),
-        'default_formatter' => 'no-start',
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1),
-      ),
-      'accordion' => array(
-        'label' => t('Accordion group'),
-        'description' => t('This fieldgroup renders child groups as jQuery accordion.'),
-        'instance_settings' => array('effect' => 'none', 'classes' => '', 'id' => ''),
-      ),
-      'accordion-item' => array(
-        'label' => t('Accordion item'),
-        'format_types' => array('open', 'closed'),
-        'description' => t('This fieldgroup renders the content in a div, part of accordion group.'),
-        'default_formatter' => 'closed',
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1),
-      ),
-    ),
-    'display' => array(
-      'html-element' => array(
-        'label' => t('HTML element'),
-        'description' => t('This fieldgroup renders the inner content in a HTML element with classes and attributes.'),
-        'instance_settings' => array('element' => 'div', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
-      ),
-      'div' => array(
-        'label' => t('Div'),
-        'description' => t('This fieldgroup renders the inner content in a simple div with the title as legend.'),
-        'format_types' => array('open', 'collapsible', 'collapsed'),
-        'instance_settings' => array('description' => '', 'show_label' => 1, 'label_element' => 'h3', 'effect' => 'none', 'speed' => 'fast', 'classes' => '', 'id' => ''),
-        'default_formatter' => 'collapsible',
-      ),
-      'html5' => array(
-        'label' => t('HTML5'),
-        'description' => t('This fieldgroup renders the inner content in a semantic HTML5 wrapper'),
-        'instance_settings' => array('wrapper' => '', 'classes' => '', 'id' => ''),
-      ),
-      'fieldset' => array(
-        'label' => t('Fieldset'),
-        'description' => t('This fieldgroup renders the inner content in a fieldset with the title as legend.'),
-        'format_types' => array('open', 'collapsible', 'collapsed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'id' => ''),
-        'default_formatter' => 'collapsible',
-      ),
-      'details' => array(
-        'label' => t('Details'),
-        'description' => t('This fieldgroup renders the inner content in a Details element with the title as summary.'),
-        'format_types' => array('open', 'closed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1, 'id' => '', 'label_element' => 'span'),
-        'default_formatter' => 'closed',
-      ),
-      'tabs' => array(
-        'label' => t('Vertical tabs group'),
-        'description' => t('This fieldgroup renders child groups in its own vertical tabs wrapper.'),
-        'instance_settings' => array('classes' => '', 'id' => ''),
-      ),
-      'tab' => array(
-        'label' => t('Vertical tab'),
-        'description' => t('This fieldgroup renders the content in a fieldset, part of vertical tabs group.'),
-        'format_types' => array('open', 'closed'),
-        'instance_settings' => array('description' => '', 'classes' => ''),
-        'default_formatter' => 'closed',
-      ),
-      'htabs' => array(
-        'label' => t('Horizontal tabs group'),
-        'description' => t('This fieldgroup renders child groups in its own horizontal tabs wrapper.'),
-        'instance_settings' => array('classes' => '', 'id' => ''),
-      ),
-      'htab' => array(
-        'label' => t('Horizontal tab item'),
-        'format_types' => array('open', 'closed'),
-        'description' => t('This fieldgroup renders the content in a fieldset, part of horizontal tabs group.'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'id' => ''),
-        'default_formatter' => 'closed',
-      ),
-      'accordion' => array(
-        'label' => t('Accordion group'),
-        'description' => t('This fieldgroup renders child groups as jQuery accordion.'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'effect' => 'bounceslide', 'id' => ''),
-      ),
-      'accordion-item' => array(
-        'label' => t('Accordion item'),
-        'format_types' => array('open', 'closed'),
-        'description' => t('This fieldgroup renders the content in a div, part of accordion group.'),
-        'instance_settings' => array('classes' => ''),
-        'default_formatter' => 'closed',
-      ),
-    ),
-  );
-}
-
-/**
  * Implements hook_field_group_format_settings().
- * If the group has no format settings, default ones will be added.
+ *   If the group has no format settings, default ones will be added.
  *
- * @param Object $group The group object.
- * @return Array $form The form element for the format settings.
+ * @param object $group
+ *   The group object.
+ * @return array
+ *   The form element for the format settings.
  */
 function field_group_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -701,6 +544,10 @@ function field_group_remove_empty_display_groups(&$element, $groups) {
  * Implements hook_field_group_format_summary().
  */
 function field_group_field_group_format_summary($group) {
+
+  $group_form = module_invoke_all('field_group_format_settings', $group);
+
+  backdrop_alter('field_group_format_settings', $group_form, $group);
 
   $output = '';
   if (isset($group->format_settings['formatter'])) {
@@ -1057,7 +904,7 @@ function field_group_build_entity_groups(&$vars, $type) {
     field_group_remove_empty_form_groups('form', $element, $groups, $element['#groups'], $element['#entity_type']);
   }
 
-  // Add the default field_group javascript.
+  // Add the default field_group javascript and stylesheet.
   $element['#attached']['js'][] = backdrop_get_path('module', 'field_group') . '/js/field_group.js';
 
   // Allow others to alter the pre_rendered build.
@@ -1242,12 +1089,6 @@ function field_group_hide_field_groups(&$element, $group_names) {
 
 /**
  * Calculates html classes for a group.
- *
- * @param object $group
- *   The Group definition.
- *
- * @return object
- *   The HTML classes calculated for the field group.
  *
  * @see hook_field_group_html_classes_alter()
  */
