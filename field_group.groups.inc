@@ -764,3 +764,42 @@ function form_process_multipage($element, &$form_state) {
 
   return $element;
 }
+
+
+/**
+ * Implements hook_field_group_html_classes_alter().
+ */
+function field_group_field_group_html_classes_alter(&$classes, &$group) {
+  // Open or closed horizontal or vertical tabs will be collapsible by default.
+  if ($group->format_type == 'tab' || $group->format_type == 'htab') {
+    $classes->required[] = 'collapsible';
+  }
+
+  if ($group->format_type == 'multipage') {
+    $class_group_type = 'field-group-multipage';
+    $classes->required[] = $class_group_type;
+    if ((array_search($class_group_type, $classes->optional)) !== false){
+      unset($classes->optional[$class_group_type]);
+    }
+  }
+
+  if (isset($group->format_settings['instance_settings'])) {
+    // Extra required classes for div.
+    if ($group->format_type == 'div') {
+      if ($group->format_settings['formatter'] != 'open') {
+
+        $speed = isset($group->format_settings['instance_settings']['speed']) ? $group->format_settings['instance_settings']['speed'] : 'none';
+        $classes->required[] = 'speed-' . $speed;
+
+        $effect = isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : 'none';
+        $classes->required[] = 'effect-' . $effect;
+      }
+    }
+    // Extra required classes for accordions.
+    elseif ($group->format_type == 'accordion') {
+      $classes->required[] = 'field-group-' . $group->format_type . '-wrapper';
+      $effect = isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : 'none';
+      $classes->required[] = 'effect-' . $effect;
+    }
+  }
+}

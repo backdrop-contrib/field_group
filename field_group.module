@@ -1221,15 +1221,13 @@ function field_group_hide_field_groups(&$element, $group_names) {
 
 /**
  * Calculates html classes for a group.
+ *
+ * @see hook_field_group_html_classes_alter()
  */
 function _field_group_get_html_classes(&$group) {
 
   if (isset($group->format_settings['formatter'])) {
     $group->collapsible = in_array($group->format_settings['formatter'], array('collapsible', 'collapsed'));
-    // Open or closed horizontal or vertical tabs will be collapsible by default.
-    if ($group->format_type == 'tab' || $group->format_type == 'htab') {
-      $group->collapsible = TRUE;
-    }
     $group->collapsed = in_array($group->format_settings['formatter'], array('collapsed', 'closed'));
   }
 
@@ -1238,12 +1236,8 @@ function _field_group_get_html_classes(&$group) {
   // Prepare extra classes, required and optional ones.
   $optional = array(str_replace('_', '-', $group->group_name));
   $required = array();
-  if ($group->format_type == 'multipage') {
-    $required[] = 'field-group-' . $group->format_type;
-  }
-  else {
-    $optional[] = 'field-group-' . $group->format_type;
-  }
+
+  $optional[] = 'field-group-' . $group->format_type;
 
   if (isset($group->format_settings['formatter']) && $group->collapsible) {
     $required[] = 'collapsible';
@@ -1263,30 +1257,12 @@ function _field_group_get_html_classes(&$group) {
     if (!empty($group->format_settings['instance_settings']['classes'])) {
       $required[] = check_plain($group->format_settings['instance_settings']['classes']);
     }
-
-    // Extra required classes for div.
-    if ($group->format_type == 'div') {
-      if ($group->format_settings['formatter'] != 'open') {
-
-        $speed = isset($group->format_settings['instance_settings']['speed']) ? $group->format_settings['instance_settings']['speed'] : 'none';
-        $required[] = 'speed-' . $speed;
-
-        $effect = isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : 'none';
-        $required[] = 'effect-' . $effect;
-      }
-    }
-
-    // Extra required classes for accordions.
-    elseif ($group->format_type == 'accordion') {
-      $required[] = 'field-group-' . $group->format_type . '-wrapper';
-      $effect = isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : 'none';
-      $required[] = 'effect-' . $effect;
-    }
-
   }
 
   $classes->required = $required;
   $classes->optional = $optional;
+
+  backdrop_alter('field_group_html_classes', $classes, $group);
 
   return $classes;
 }
