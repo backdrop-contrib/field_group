@@ -617,15 +617,6 @@ function field_group_field_extra_fields() {
     );
   }
 
-  // Field to integrate with the wysiwyg module on user settings.
-  if (module_exists('wysiwyg')) {
-    $extra['user']['user']['form']['wysiwyg'] = array(
-      'label' => t('Wysiwyg status'),
-      'description' => t('Text formats enabled for rich-text editing'),
-      'weight' => 5,
-    );
-  }
-
   return $extra;
 }
 
