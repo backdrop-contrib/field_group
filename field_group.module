@@ -122,16 +122,19 @@ function field_group_permission() {
 /**
  * Menu Wildcard loader function to load group definitions.
  *
- * @param $group_name
+ * @param string $group_name
  *   The name of the group, as contained in the path.
- * @param $entity_type
+ * @param string $entity_type
  *   The name of the entity.
- * @param $bundle_name
+ * @param string $bundle_name
  *   The name of the bundle, as contained in the path.
- * @param $bundle_pos
+ * @param int $bundle_pos
  *   The position of $bundle_name in $map.
- * @param $map
+ * @param array $map
  *   The translated menu router path argument map.
+ *
+ * @return object
+ *   Group definition.
  */
 function field_group_menu_load($group_name, $entity_type, $bundle_name, $bundle_pos, $map) {
 
@@ -151,14 +154,17 @@ function field_group_menu_load($group_name, $entity_type, $bundle_name, $bundle_
 /**
  * Loads a group definition.
  *
- * @param $group_name
+ * @param string $group_name
  *   The name of the group.
- * @param $entity_type
+ * @param string $entity_type
  *   The name of the entity.
- * @param $bundle_name
+ * @param string $bundle_name
  *   The name of the bundle.
- * @param $mode
+ * @param string $mode
  *   The view mode to load.
+ *
+ * @return object
+ *   Group definition.
  */
 function field_group_load_field_group($group_name, $entity_type, $bundle_name, $mode) {
 
@@ -209,9 +215,6 @@ function field_group_theme_registry_alter(&$theme_registry) {
 
 /**
  * Implements hook_field_attach_delete_bundle().
- *
- * @param String $entity_type
- * @param String $bundle
  */
 function field_group_field_attach_delete_bundle($entity_type, $bundle) {
 
@@ -274,11 +277,6 @@ function field_group_field_attach_view_alter(&$element, $context) {
 /**
  * Implements hook_field_group_format_settings().
  *   If the group has no format settings, default ones will be added.
- *
- * @param object $group
- *   The group object.
- * @return array
- *   The form element for the format settings.
  */
 function field_group_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -349,6 +347,9 @@ function field_group_field_group_format_settings($group) {
  *
  * Called in field_group_field_group_pre_render(), but can also be called in
  * other implementations of hook_field_group_pre_render().
+ *
+ * @param object $group
+ *   The group object passed by reference.
  */
 function field_group_pre_render_prepare(&$group) {
 
@@ -361,11 +362,8 @@ function field_group_pre_render_prepare(&$group) {
 
 /**
  * Implements hook_field_group_pre_render().
- *
- * @param Array $elements by address.
- * @param Object $group The Field group info.
  */
-function field_group_field_group_pre_render(&$element, &$group, & $form) {
+function field_group_field_group_pre_render(&$element, &$group, &$form) {
 
   field_group_pre_render_prepare($group);
 
@@ -394,14 +392,14 @@ function field_group_field_group_pre_render(&$element, &$group, & $form) {
 /**
  * Remove empty groups on forms.
  *
- * @param String $parent_name
+ * @param string $parent_name
  *   The name of the element.
  * @param array $element
  *   The element to check the empty state.
  * @param array $groups
  *   Array of group objects.
  */
-function field_group_remove_empty_form_groups($name, & $element, $groups, &$form_groups, $entity) {
+function field_group_remove_empty_form_groups($name, &$element, $groups, &$form_groups, $entity) {
 
   $children = element_children($element);
 
@@ -439,6 +437,18 @@ function field_group_remove_empty_form_groups($name, & $element, $groups, &$form
 
 /**
  * Determine if an element has non-empty children.
+ *
+ * @param array $element
+ *   The element to check.
+ * @param string $entity
+ *   The entity type name.
+ * @param string $childname
+ *   The name of the child element.
+ * @param array $groups
+ *   Array of group objects.
+ *
+ * @return bool
+ *   TRUE if element has non-empty children, FALSE otherwise.
  */
 function _field_group_is_empty_element($element, $entity, $childname, $groups) {
 
@@ -476,12 +486,16 @@ function _field_group_is_empty_element($element, $entity, $childname, $groups) {
 
 /**
  * Remove empty groups on entity display.
+ *
  * @param array $element
  *   The element to check the empty state.
  * @param array $groups
  *   Array of group objects.
+ *
+ * @return bool
+ *   TRUE if group is empty, FALSE otherwise.
  */
-function field_group_remove_empty_display_groups(& $element, $groups) {
+function field_group_remove_empty_display_groups(&$element, $groups) {
 
   $empty_child = TRUE;
   $empty_group = TRUE;
@@ -640,14 +654,17 @@ function field_group_field_attach_rename_bundle($entity_type, $bundle_old, $bund
 /**
  * Get all groups that match.
  *
- * @param $entity_type
- *   The name of the entity.
- * @param $bundle
+ * @param string $entity_type
+ *   The name of the entity type.
+ * @param string $bundle
  *   The name of the bundle.
- * @param $view_mode
+ * @param string $view_mode
  *   The view mode.
- * @param $reset.
+ * @param bool $reset.
  *   Whether to reset the cache or not.
+ *
+ * @return array
+ *   Array of group objects.
  */
 function field_group_info_groups($entity_type = NULL, $bundle = NULL, $view_mode = NULL, $reset = FALSE) {
   static $groups = FALSE;
@@ -681,7 +698,7 @@ function field_group_info_groups($entity_type = NULL, $bundle = NULL, $view_mode
  *   'mode' The view mode.
  *
  * @return array
- *   Array of groups.
+ *   Array of group objects.
  */
 function field_group_read_groups($conditions = array()) {
 
@@ -716,14 +733,17 @@ function field_group_read_groups($conditions = array()) {
 /**
  * Checks if a field_group exists in required context.
  *
- * @param String $group_name
+ * @param string $group_name
  *   The name of the group.
- * @param String $entity_type
+ * @param string $entity_type
  *   The name of the entity.
- * @param String $bundle
+ * @param string $bundle
  *   The bundle for the entity.
- * @param String $mode
+ * @param string $mode
  *   The view mode context the group will be rendered.
+ *
+ * @return bool
+ *   TRUE if group exists, FALSE otherwise.
  */
 function field_group_exists($group_name, $entity_type, $bundle, $mode) {
   $groups = field_group_read_groups();
@@ -733,7 +753,7 @@ function field_group_exists($group_name, $entity_type, $bundle, $mode) {
 /**
  * Delete a field group.
  *
- * @param $group
+ * @param object $group
  *   A group definition.
  */
 function field_group_group_delete($group) {
@@ -747,14 +767,12 @@ function field_group_group_delete($group) {
 }
 
 /**
- * field_group_group_save().
- *
  * Saves a group definition.
  *
- * @param $group
+ * @param object $group
  *   A group definition.
  */
-function field_group_group_save(& $group, $new = TRUE) {
+function field_group_group_save(&$group, $new = TRUE) {
 
   // Prepare the record.
   $object = $group;
@@ -774,9 +792,12 @@ function field_group_group_save(& $group, $new = TRUE) {
 }
 
 /**
- * Function to retrieve all format possibilities for the fieldgroups.
+ * Retrieve all format possibilities for the fieldgroups.
+ *
+ * @return array|NULL
+ *   Array of formatters. Attempts to retrieve from static cache if set.
  */
-function field_group_formatter_info($display_overview = FALSE) {
+function field_group_formatter_info() {
   $cache = &backdrop_static(__FUNCTION__, array());
   if (empty($cache)) {
     if ($cached = cache_get('field_group_formatter_info', 'cache_field')) {
@@ -804,14 +825,12 @@ function field_group_formatter_info($display_overview = FALSE) {
 /**
  * Attach groups to the (form) build.
  *
- * @param Array $element
+ * @param array $element
  *   The part of the form.
- * @param String $view_mode
+ * @param string $view_mode
  *   The mode for the build.
- * @param Array $form_state
- *   The optional form state when in view_mode = form context.
  */
-function field_group_attach_groups(&$element, $view_mode, $form_state = array()) {
+function field_group_attach_groups(&$element, $view_mode) {
 
   $entity_type = $element['#entity_type'];
   $bundle = $element['#bundle'];
@@ -834,8 +853,13 @@ function field_group_attach_groups(&$element, $view_mode, $form_state = array())
 
 /**
  * Pre render callback for rendering groups.
- * @see field_group_field_attach_form
+ *
  * @param $element Form that is being rendered.
+ *
+ * @return array
+ *   Array with re-arranged fields in forms.
+ *
+ * @see field_group_field_attach_form
  */
 function field_group_form_pre_render(&$element) {
   return field_group_build_entity_groups($element, 'form');
@@ -844,12 +868,17 @@ function field_group_form_pre_render(&$element) {
 /**
  * Preprocess/ Pre-render callback.
  *
+ * @param array $vars
+ *   Preprocess vars or form element
+ * @param string $type
+ *   The type of object being rendered
+ *
+ * @return array
+ *   Array with re-arranged fields in forms.
+ *
  * @see field_group_form_pre_render()
  * @see field_group_theme_registry_alter
  * @see field_group_fields_nest()
- * @param $vars preprocess vars or form element
- * @param $type The type of object being rendered
- * @return $element Array with re-arranged fields in forms.
  */
 function field_group_build_entity_groups(&$vars, $type) {
 
@@ -921,13 +950,14 @@ function field_group_build_entity_groups(&$vars, $type) {
 /**
  * Recursive function to nest fields in the field groups.
  *
- * This function will take out all the elements in the form and
+ * Will take out all the elements in the form and
  * place them in the correct container element, a fieldgroup.
  * The current group element in the loop is passed recursively so we can
  * stash fields and groups in it while we go deeper in the array.
- * @param Array $element
+ *
+ * @param array $element
  *   The current element to analyse for grouping.
- * @param Array $vars
+ * @param array $vars
  *   Rendering vars from the entity being viewed.
  */
 function field_group_fields_nest(&$element, &$vars = NULL) {
@@ -1007,15 +1037,18 @@ function field_group_fields_nest(&$element, &$vars = NULL) {
 }
 
 /**
- * Function to pre render the field group element.
+ * Pre render the field group element.
+ *
+ * @param array $element
+ *   Array of group element that needs to be created!
+ * @param object $group
+ *   Object with the group information.
+ * @param array $form
+ *   An associative array containing the structure of the form.
  *
  * @see field_group_fields_nest()
- *
- * @param $element Array of group element that needs to be created!
- * @param $group Object with the group information.
- * @param $form The form object itself.
  */
-function field_group_pre_render(& $element, $group, & $form) {
+function field_group_pre_render(&$element, $group, &$form) {
 
   // Only run the pre_render function if the group has elements.
   // $group->group_name
@@ -1070,6 +1103,12 @@ function field_group_hide_field_groups(&$element, $group_names) {
 /**
  * Calculates html classes for a group.
  *
+ * @param object $group
+ *   The Group definition.
+ *
+ * @return object
+ *   The HTML classes calculated for the field group.
+ *
  * @see hook_field_group_html_classes_alter()
  */
 function _field_group_get_html_classes(&$group) {
@@ -1117,6 +1156,14 @@ function _field_group_get_html_classes(&$group) {
 
 /**
  * Get the default formatter settings for a given formatter and a mode.
+ *
+ * @param string $format_type
+ *   The name of the format type.
+ * @param string $mode
+ *   The mode type.
+ *
+ * @return array
+ *   An array of the default formatter and instance settings.
  */
 function _field_group_get_default_formatter_settings($format_type, $mode) {
 

@@ -8,15 +8,17 @@
 /**
  * Returns HTML for an element's children fieldsets as horizontal tabs.
  *
- * @param $variables
+ * @param array $variables
  *   An associative array containing:
  *   - element: An associative array containing the properties and children of the
  *     fieldset. Properties used: #children.
  *
+ * @return string
+ *   HTML output.
+ *
  * @ingroup themeable
  */
-function theme_horizontal_tabs($variables)
-{
+function theme_horizontal_tabs($variables) {
   $element = $variables['element'];
   // Add required JavaScript and Stylesheet.
   backdrop_add_library('field_group', 'horizontal-tabs');
@@ -30,15 +32,17 @@ function theme_horizontal_tabs($variables)
 /**
  * Returns HTML for an element's children fieldsets as multipage.
  *
- * @param $variables
+ * @param array $variables
  *   An associative array containing:
  *   - element: An associative array containing the properties and children of the
  *     fieldset. Properties used: #children.
  *
+ * @return string
+ *   HTML output.
+ *
  * @ingroup themeable
  */
-function theme_multipage($variables)
-{
+function theme_multipage($variables) {
   $element = $variables['element'];
   // Add required JavaScript and Stylesheet.
   $element['#attached']['library'][] = array('field_group', 'multipage');
@@ -60,10 +64,12 @@ function theme_multipage($variables)
  *   - element: An associative array containing the properties and children of the
  *     fieldset. Properties used: #children.
  *
+ * @return string
+ *   HTML output.
+ *
  * @ingroup themeable
  */
-function theme_multipage_pane($variables)
-{
+function theme_multipage_pane($variables) {
 
   $element = $variables['element'];
   $group = $variables['element']['#group_object'];
