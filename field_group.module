@@ -81,6 +81,24 @@ function field_group_menu() {
             'access arguments' => array('administer site configuration'),
           );
 
+          // Attempt to provide a title instead of just "configure"
+          $items["$path/groups/%field_group_menu"] = array(
+            'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
+            'title callback' => 'field_group_menu_title',
+            'title arguments' => array($group_position),
+            'page callback' => 'backdrop_get_form',
+            'page arguments' => array('field_group_configure_form', $group_position),
+            'file' => 'field_group.field_ui.inc',
+          ) + $access;
+          $items["$path/groups/%field_group_menu/configure"] = array(
+            'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
+            'title' => 'Configure',
+            'page callback' => 'backdrop_get_form',
+            'page arguments' => array('field_group_configure_form', $group_position),
+            'type' => MENU_CALLBACK,
+            'file' => 'field_group.field_ui.inc',
+          ) + $access;
+
           $items["$path/groups/%field_group_menu/delete"] = array(
             'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
             'title' => 'Delete',
@@ -105,6 +123,16 @@ function field_group_menu() {
   }
 
   return $items;
+}
+
+/**
+ * Title callback: Returns the name of a given instance.
+ *
+ * @see field_group_menu()
+ */
+function field_group_menu_title($instance) {
+  //return $instance['label'];
+  return 'configure';
 }
 
 /**
@@ -313,7 +341,7 @@ function field_group_field_group_format_settings($group) {
 
   if (isset($formatter['instance_settings']['id'])) {
     $form['instance_settings']['id'] = array(
-      '#title' => t('ID'),
+      '#title' => t('ID attribute'),
       '#type' => 'textfield',
       '#default_value' => isset($group->format_settings['instance_settings']['id']) ? $group->format_settings['instance_settings']['id'] : (isset($formatter['instance_settings']['id']) ? $formatter['instance_settings']['id'] : ''),
       '#weight' => 10,
@@ -548,15 +576,6 @@ function field_group_field_group_format_summary($group) {
       }
 
       $output .= '<strong>' . $key . '</strong> ';
-
-      if (isset($group_form['instance_settings'], $group_form['instance_settings'][$key]['#options'])) {
-        if (is_array($value)) {
-          $value = implode(', ', array_filter($value));
-        }
-        else {
-          $value = $group_form['instance_settings'][$key]['#options'][$value];
-        }
-      }
 
       // Shorten the string.
       if (backdrop_strlen($value) > 38) {
