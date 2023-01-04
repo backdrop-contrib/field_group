@@ -112,7 +112,7 @@ function hook_field_group_formatter_info() {
  * formatter. Each formatter can have different elements and storage.
  *
  * @param object $group
- *   The group object.
+ *   The Group definition.
  * @return array
  *   The form element for the format settings.
  */
@@ -373,6 +373,12 @@ function hook_field_group_create_field_group($group) {
 
 /**
  * Implements hook_field_group_format_settings_alter().
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form, which is passed
+ *   by reference.
+ * @param object $group
+ *   The Group definition.
  */
 function hook_field_group_format_settings_alter(&$form, &$group) {
   // Alter the group format settings that appear in the summary and form.
@@ -380,6 +386,11 @@ function hook_field_group_format_settings_alter(&$form, &$group) {
 
 /**
  * Implements hook_field_group_html_classes_alter().
+ *
+ * @param object $classes
+ *   An object of required and optional classes.
+ * @param object $group
+ *   The Group definition.
  */
 function hook_field_group_html_classes_alter(&$classes, &$group) {
   // Alter the required or optional classes on a field group.

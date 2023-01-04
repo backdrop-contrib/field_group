@@ -385,7 +385,12 @@ function field_group_add_row($name, $parent_options, $params) {
 
 /**
  * Creates a form for field_group formatters.
- * @param Object $group The FieldGroup object.
+ *
+ * @param object $group
+ *   The Field Group object, which is passed by reference.
+ *
+ * @return array
+ *   An associative array containing the structure of the form.
  */
 function field_group_format_settings_form(&$group) {
   $form = array();
@@ -411,6 +416,11 @@ function field_group_format_settings_form(&$group) {
 
 /**
  * Validate the label. Label is required for fieldsets that are collapsible.
+ *
+ * @param array $element
+ *
+ * @param array $form_state
+ *   An associative array containing the current state of the form.
  */
 function field_group_format_settings_label_validate($element, &$form_state) {
   $values = $form_state['values'];
@@ -769,7 +779,15 @@ function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form
 }
 
 /**
- * Menu callback; present a form for configuring a group.
+ * Remove group from bundle.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
+ *
+ * @todo we'll have to reset all view mode settings.
  */
 function field_group_configure_form($form, &$form_state, $group, $view_mode = 'form') {
   $form['#group'] = $group;

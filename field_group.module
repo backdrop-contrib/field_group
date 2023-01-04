@@ -286,11 +286,6 @@ function field_group_field_attach_view_alter(&$element, $context) {
 /**
  * Implements hook_field_group_format_settings().
  *   If the group has no format settings, default ones will be added.
- *
- * @param object $group
- *   The group object.
- * @return array
- *   The form element for the format settings.
  */
 function field_group_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -1089,6 +1084,12 @@ function field_group_hide_field_groups(&$element, $group_names) {
 
 /**
  * Calculates html classes for a group.
+ *
+ * @param object $group
+ *   The Group definition.
+ *
+ * @return object
+ *   The HTML classes calculated for the field group.
  *
  * @see hook_field_group_html_classes_alter()
  */
