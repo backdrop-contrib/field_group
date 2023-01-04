@@ -977,6 +977,34 @@ function field_group_field_group_build_pre_render_alter(&$element) {
 }
 
 /**
+ * Implements hook_field_group_field_ui_parent_requirements_alter().
+ */
+function field_group_field_group_field_ui_parent_requirements_alter(&$parent_requirements, &$context) {
+  $parent_requirements = array(
+    'multipage' => array(
+      'parent' => 'multipage-group',
+      'message' => 'Each Multipage element needs to have a parent Multipage group element.',
+    ),
+    'htab' => array(
+      'parent' => 'htabs',
+      'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
+    ),
+    'accordion-item' => array(
+      'parent' => 'accordion',
+      'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
+    ),
+  );
+
+  // On display overview tabs need to be checked.
+  if ($context['display_overview']) {
+    $parent_requirements['tab'] = array(
+      'parent' => 'tabs',
+      'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
+    );
+  }
+}
+
+/**
  * Implements hook_field_group_html_classes_alter().
  */
 function field_group_field_group_html_classes_alter(&$classes, &$group) {

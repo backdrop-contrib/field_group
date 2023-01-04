@@ -314,34 +314,18 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
   $form['#validate'][] = 'field_group_field_overview_validate';
   $form['#submit'][] = 'field_group_field_overview_submit';
 
-  // Create the settings for fieldgroup as vertical tabs (merged with DS).
+  // Create the settings for fieldgroup as vertical tabs.
   field_group_field_ui_create_vertical_tabs($form, $form_state, $params);
 
   // Show a warning if the user has not set up required containers
   if ($form['#groups']) {
 
-    $parent_requirements = array(
-      'multipage' => array(
-        'parent' => 'multipage-group',
-        'message' => 'Each Multipage element needs to have a parent Multipage group element.',
-      ),
-      'htab' => array(
-        'parent' => 'htabs',
-        'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
-      ),
-      'accordion-item' => array(
-        'parent' => 'accordion',
-        'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
-      ),
+    $parent_requirements = array();
+    $context = array(
+      'form' => $form,
+      'display_overview' => $display_overview,
     );
-
-    // On display overview tabs need to be checked.
-    if ($display_overview) {
-      $parent_requirements['tab'] = array(
-        'parent' => 'tabs',
-        'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
-      );
-    }
+    backdrop_alter('field_group_field_ui_parent_requirements', $parent_requirements, $context);
 
     foreach ($form['#groups'] as $group_name) {
       $group_check = field_group_load_field_group($group_name, $params->entity_type, $params->bundle, $params->mode);
