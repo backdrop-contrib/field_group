@@ -915,6 +915,9 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
  */
 function field_group_field_group_build_pre_render_alter(& $element) {
 
+  // Add the default field_group javascript.
+  $element['#attached']['js'][] = backdrop_get_path('module', 'field_group') . '/js/field_groups.js';
+
   // Move additional settings to the last multipage pane if configured that way.
   // Note that multipages MUST be in the root of the form.
   foreach (element_children($element) as $name) {

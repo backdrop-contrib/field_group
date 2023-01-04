@@ -888,7 +888,7 @@ function field_group_build_entity_groups(&$vars, $type) {
     field_group_remove_empty_form_groups('form', $element, $groups, $element['#groups'], $element['#entity_type']);
   }
 
-  // Add the default field_group javascript and stylesheet.
+  // Add the default field_group javascript.
   $element['#attached']['js'][] = backdrop_get_path('module', 'field_group') . '/js/field_group.js';
 
   // Allow others to alter the pre_rendered build.
