@@ -954,9 +954,10 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
 function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
 
   $source_mode = $form_state['#source_mode'] = $form_state['values']['additional_settings']['fieldgroup_clone'] == '0' ? 'form' : $form_state['values']['additional_settings']['fieldgroup_clone'];
-  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type));
+  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type, 'mode' => $source_mode));
 
   $form_state['#source_groups'] = array();
+  // @todo this is probably not necessary since field_group_read_groups already filters by these.
   if (!empty($groups_to_clone) && isset($groups_to_clone[$form_state['field_group_params']->entity_type], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode])) {
     $form_state['#source_groups'] = $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode];
   }
@@ -964,6 +965,17 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
   // Check for types are not known in current mode.
   if ($form_state['field_group_params']->mode != 'form') {
     $non_existing_types = array('multipage', 'multipage-group');
+  }
+
+  if (!empty($form_state['#source_groups'])) {
+    $field_instances = field_info_instances($form_state['field_group_params']->entity_type, $form_state['field_group_params']->bundle);
+    $visible_fields = array();
+    foreach ($field_instances as $field_name => $field_instance) {
+      if ($field_instance['display'][$form_state['field_group_params']->mode]['type'] != 'hidden') {
+        $visible_fields[] = $field_name;
+      }
+    }
+    $form_state['#visible_fields'] = $visible_fields;
   }
 
   foreach ($form_state['#source_groups'] as $key => $group) {
@@ -992,12 +1004,9 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
  */
 function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
-  $source_mode = $form_state['#source_mode'];
-  $groups_to_clone = $form_state['#groups_to_clone'];
-
   $fields = array_keys($form_state['values']['fields']);
-  if (!empty($form_state['#source_groups'])) {
 
+  if (!empty($form_state['#source_groups'])) {
     foreach ($form_state['#source_groups'] as $source_group) {
       if (in_array($source_group->group_name, $fields)) {
         backdrop_set_message(t('Fieldgroup @group is not cloned since a group already exists with the same name.', array('@group' => $source_group->group_name)), 'warning');
@@ -1006,7 +1015,7 @@ function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
       // Reset
       $source_group->mode = $form_state['field_group_params']->mode;
-      $source_group->children = array();
+      $source_group->children = array_intersect($source_group->children, $form_state['#visible_fields']);
 
       field_group_group_save($source_group, TRUE);
 
