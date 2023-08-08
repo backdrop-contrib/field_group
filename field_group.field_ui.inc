@@ -965,9 +965,6 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
   if ($form_state['field_group_params']->mode != 'form') {
     $non_existing_types = array('multipage', 'multipage-group');
   }
-  else {
-    $non_existing_types = array('div');
-  }
 
   foreach ($form_state['#source_groups'] as $key => $group) {
     if (in_array($group->format_type, $non_existing_types)) {
