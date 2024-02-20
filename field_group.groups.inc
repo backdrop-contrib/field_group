@@ -120,7 +120,7 @@ function field_group_field_group_formatter_info() {
         'label' => t('Details'),
         'description' => t('This fieldgroup renders the inner content in a Details element with the title as summary.'),
         'format_types' => array('open', 'closed'),
-        'instance_settings' => array('description' => '', 'classes' => '', 'required_fields' => 1, 'id' => ''),
+        'instance_settings' => array('description' => '', 'label_element' => 'span', 'classes' => '', 'required_fields' => 1, 'id' => ''),
         'default_formatter' => 'closed',
       ),
       'tabs' => array(
