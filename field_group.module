@@ -344,6 +344,14 @@ function field_group_field_group_format_settings($group) {
     );
   }
 
+  // Allow field_group to be displayed even if contained fields are currently empty.
+  $form['instance_settings']['show_empty_fields'] = array(
+    '#title' => t('Show Empty Fields'),
+    '#description' => t('Display this field group even if the contained fields are currently empty.'),
+    '#type' => 'checkbox',
+    '#default_value' => isset($formatter['instance_settings']['show_empty_fields']) ? $formatter['instance_settings']['show_empty_fields'] : 0,
+  );
+
   return $form;
 }
 
@@ -420,7 +428,7 @@ function field_group_remove_empty_form_groups($name, &$element, $groups, &$form_
     }
   }
 
-  if (!$hasChildren) {
+  if (!$hasChildren && empty($form_groups[$name]->format_settings['instance_settings']['show_empty_fields'])) {
 
     // Remove empty elements from the #groups.
     if (empty($element) && isset($form_groups[$name]) && !is_array($form_groups[$name])) {
@@ -496,11 +504,13 @@ function _field_group_is_empty_element($element, $entity, $childname, $groups) {
  *   The element to check the empty state.
  * @param array $groups
  *   Array of group objects.
+ * @param bool $show_empty_fields
+ *   Indicates the formatting setting of "show empty fields".
  *
  * @return bool
  *   TRUE if group is empty, FALSE otherwise.
  */
-function field_group_remove_empty_display_groups(&$element, $groups) {
+function field_group_remove_empty_display_groups(&$element, $groups, $show_empty_fields = FALSE) {
 
   $empty_child = TRUE;
   $empty_group = TRUE;
@@ -510,7 +520,7 @@ function field_group_remove_empty_display_groups(&$element, $groups) {
 
     // Descend if the child is a group.
     if (in_array($name, $groups)) {
-      $empty_child = field_group_remove_empty_display_groups($element[$name], $groups);
+      $empty_child = field_group_remove_empty_display_groups($element[$name], $groups, !empty($element['#fieldgroups'][$name]->format_settings['instance_settings']['show_empty_fields']));
       if (!$empty_child) {
         $empty_group = FALSE;
       }
@@ -523,7 +533,7 @@ function field_group_remove_empty_display_groups(&$element, $groups) {
   }
 
   // Reset an empty group.
-  if ($empty_group) {
+  if ($empty_group && !$show_empty_fields) {
     $element = NULL;
   }
 
@@ -1037,9 +1047,9 @@ function field_group_fields_nest(&$element, &$vars = NULL) {
  */
 function field_group_pre_render(&$element, $group, &$form) {
 
-  // Only run the pre_render function if the group has elements.
-  // $group->group_name
-  if ($element == array()) {
+  // Only run the pre_render function if the group has elements or if the
+  // instance settings allow it to show empty fields.
+  if ($element == array() && empty($group->format_settings['instance_settings']['show_empty_fields'])) {
     return;
   }
 
