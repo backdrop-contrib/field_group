@@ -134,4 +134,40 @@ Backdrop.fieldUIDisplayOverview.group.prototype = {
 
 };
 
+/**
+ * Process field group actions elements.
+ *
+ * @type {Backdrop~behavior}
+ *
+ * @prop {Backdrop~behaviorAttach} attach
+ *   Attaches field-groupActions behaviors.
+ */
+Backdrop.behaviors.fieldgroupActions = {
+  attach: function (context, settings) {
+    var $actionsElement = $('.field-group-formatter-settings-edit-wrapper').once('field-group-formatter-settings-edit-wrapper', context);
+    // Attach event handlers to toggle button.
+    $actionsElement.each(function () {
+      var $this = $(this);
+
+      $this.on('focusout', function (e) {
+        setTimeout(function () {
+          if ($this.has(document.activeElement).length == 0) {
+            // The focus left the action button group, hide actions.
+            $this.removeAttr('open');
+          }
+        }, 1);
+      });
+    });
+    $(document).on('keydown.fieldgroupActions', function (event) {
+      if (event.key === 'Escape') {
+        $('.field-group-formatter-settings-edit-wrapper').removeAttr('open');
+      }
+    });
+
+  },
+  detach: function (context) {
+    $(document).off('keydown.fieldgroupActions');
+  }
+};
+
 })(jQuery);

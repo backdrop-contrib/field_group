@@ -247,28 +247,40 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
       }
       // Add the configure button.
       $table[$name]['settings_edit'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('field-formatter-settings-edit-wrapper')),
+        '#type' => 'details',
+        '#summary' => icon('dots-three-outline-fill', array(
+          'alt' => t('Configure'),
+          'attributes' => array(
+            'width' => 22,
+            'height' => 22,
+          ),
+        )),
+        '#attributes' => array(
+          'class' => array('field-formatter-settings-edit-wrapper', 'field-group-formatter-settings-edit-wrapper'),
+          'aria-label' => t('Configure'),
+        ),
       );
       $table[$name]['settings_edit']['edit'] = $base_button + array(
         '#type' => 'submit',
         '#name' => $name . '_group_settings_edit',
         '#value' => t('Configure'),
-        '#attributes' => array('class' => array('field-formatter-settings-edit button-secondary'), 'alt' => t('Configure')),
+        '#attributes' => array('class' => array('field-formatter-settings-edit', 'button-secondary'), 'alt' => t('Configure')),
         '#op' => 'edit',
         // Do not check errors for the 'Configure' button.
         '#limit_validation_errors' => array(),
       );
+      $table[$name]['settings_edit']['delete'] = array(
+        '#type' => 'link',
+        '#title' => t('Delete'),
+        '#href' => '',
+        '#attributes' => array('class' => array('field-formatter-settings-delete')),
+      );
       if ($display_overview) {
-        $table[$name]['settings_edit']['delete'] = array(
-          '#markup' => l(t('Delete'), $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode),
-        );
+        $table[$name]['settings_edit']['delete']['#href'] = $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode;
       }
     }
     if (!$display_overview) {
-      $table[$name]['settings_edit']['delete'] = array(
-        '#markup' => l(t('Delete'), $params->admin_path . '/groups/' . $name . '/delete/form'),
-      );
+      $table[$name]['settings_edit']['delete']['#href'] = $params->admin_path . '/groups/' . $name . '/delete/form';
     }
   }
 

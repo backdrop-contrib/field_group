@@ -17,12 +17,86 @@ tr.field-group input.form-submit {
   float: none;
 }
 
-#field-display-overview .field-formatter-settings-edit-wrapper a {
-  display: block;
-}
-
+#field-display-overview input.field-formatter-settings-edit,
 #field-overview input.field-formatter-settings-edit {
-  margin: 0;
+  border: 0;
+  box-shadow: none;
   padding: 0.4em 1em;
   line-height: 1.2;
+}
+
+.field-formatter-settings-delete {
+  display: block;
+  padding: 0.4em 1em;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+
+.field-group-formatter-settings-edit-wrapper {
+  position: relative;
+  border: 0;
+  border-radius: unset;
+  margin: 0;
+  background-color: transparent;
+  overflow: visible;
+}
+
+.field-group-formatter-settings-edit-wrapper summary {
+  text-transform: uppercase;
+  border: 0;
+  list-style: none;
+
+  span {
+    font-size: inherit;
+  }
+}
+
+.field-group-formatter-settings-edit-wrapper .details-child-wrapper {
+  position: absolute;
+  right: 0;
+  display: block;
+  z-index: 100;
+  background: #fff;
+  border-radius: 4px;
+  border: 2px solid #ccc;
+  margin-top: 5px;
+  box-shadow: 0 0 4px #ddd;
+}
+
+.field-group-formatter-settings-edit-wrapper .details-child-wrapper:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: auto;
+  right: 17px;
+  top: -18px;
+  border: 9px solid transparent;
+  border-bottom: 9px solid #ccc;
+}
+
+.field-group-formatter-settings-edit-wrapper .details-child-wrapper:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: auto;
+  right: 18px;
+  top: -14px;
+  border: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.field-group-formatter-settings-edit-wrapper .details-child-wrapper > * {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#field-overview .field-group-formatter-settings-edit-wrapper .details-child-wrapper > *:first-child,
+#field-display-overview .field-group-formatter-settings-edit-wrapper .details-child-wrapper > *:first-child {
+  margin-top: 0.5em;
+}
+
+#field-overview .field-group-formatter-settings-edit-wrapper .details-child-wrapper > *:last-child,
+#field-display-overview .field-group-formatter-settings-edit-wrapper .details-child-wrapper > *:last-child {
+  margin-bottom: 0.5em;
 }
