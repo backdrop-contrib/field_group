@@ -248,13 +248,7 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
       // Add the configure button.
       $table[$name]['settings_edit'] = array(
         '#type' => 'details',
-        '#summary' => icon('dots-three-outline-fill', array(
-          'alt' => t('Configure'),
-          'attributes' => array(
-            'width' => 22,
-            'height' => 22,
-          ),
-        )),
+        '#summary' => t('Configure'),
         '#attributes' => array(
           'class' => array('field-formatter-settings-edit-wrapper', 'field-group-formatter-settings-edit-wrapper'),
           'aria-label' => t('Configure'),
