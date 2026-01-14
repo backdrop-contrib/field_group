@@ -17,15 +17,15 @@ tr.field-group input.form-submit {
   float: none;
 }
 
-#field-display-overview input.field-formatter-settings-edit,
-#field-overview input.field-formatter-settings-edit {
+#field-display-overview input.field-group-formatter-settings-edit,
+#field-overview input.field-group-formatter-settings-edit {
   border: 0;
   box-shadow: none;
   padding: 0.4em 1em;
   line-height: 1.2;
 }
 
-.field-formatter-settings-delete {
+.field-group-formatter-settings-delete {
   display: block;
   padding: 0.4em 1em;
   line-height: 1.2;
