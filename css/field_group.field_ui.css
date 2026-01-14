@@ -20,6 +20,7 @@ tr.field-group input.form-submit {
 #field-display-overview input.field-group-formatter-settings-edit,
 #field-overview input.field-group-formatter-settings-edit {
   border: 0;
+  border-radius: unset;
   box-shadow: none;
   padding: 0.4em 1em;
   line-height: 1.2;
@@ -87,8 +88,7 @@ tr.field-group input.form-submit {
 }
 
 .field-group-formatter-settings-edit-wrapper .details-child-wrapper > * {
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0;
 }
 
 #field-overview .field-group-formatter-settings-edit-wrapper .details-child-wrapper > *:first-child,
