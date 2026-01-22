@@ -37,3 +37,14 @@ function field_group_update_1000() {
     db_drop_table('field_group');
   }
 }
+
+// Enable field_group_extended sub-module.
+
+/**
+ * Enable field_group_extended.
+ */
+function field_group_update_1001() {
+  if (!module_exists('field_group_extended')) {
+    update_module_enable(array('field_group_extended'));
+  }
+}

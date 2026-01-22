@@ -189,16 +189,7 @@ function hook_field_group_format_settings($group) {
       );
       break;
     case 'tabs':
-    case 'htabs':
-    case 'accordion':
-      unset($form['instance_settings']['description']);
-      if (isset($form['instance_settings']['required_fields'])) {
-        unset($form['instance_settings']['required_fields']);
-      }
-      break;
     case 'tab':
-    case 'htab':
-    case 'accordion-item':
     default:
   }
 
@@ -275,8 +266,8 @@ function hook_field_group_pre_render(&$element, $group, &$form) {
  */
 function hook_field_group_pre_render_alter(&$element, $group, &$form) {
 
-  if ($group->format_type == 'htab') {
-    $element['#theme_wrappers'] = array('my_horizontal_tab');
+  if ($group->format_type == 'tab') {
+    $element['#theme_wrappers'] = array('my_vertical_tab');
   }
 
 }
@@ -409,6 +400,17 @@ function hook_field_group_html_classes_alter(&$classes, &$group) {
   // Alter the required or optional classes on a field group.
 }
 
+/**
+ * Implements hook_field_group_mode_types_excluded_alter().
+ *
+ * @param array $excluded_types
+ *   An array of excluded format types.
+ * @param string $mode
+ *   The mode: form or display.
+ */
+function hook_field_group_mode_types_excluded_alter(&$excluded_types, $mode) {
+  // Alter the excluded types for a mode..
+}
 
 /**
  * @} End of "addtogroup hooks".

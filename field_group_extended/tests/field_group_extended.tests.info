@@ -1,0 +1,5 @@
+[GroupExtendedDisplayTestCase]
+name = Field Group Extended Display tests
+description = Test the field group extended types display.
+group = Field Group
+file = field_group_extended.ui.test

@@ -1,0 +1,6 @@
+name = Field Group Extended
+description = "More format types for Field Group"
+package = Fields
+backdrop = 1.x
+type = module
+dependencies[] = field_group
