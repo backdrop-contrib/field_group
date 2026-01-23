@@ -989,15 +989,15 @@ function field_group_field_group_field_ui_parent_requirements_alter(&$parent_req
   $parent_requirements = array(
     'multipage' => array(
       'parent' => 'multipage-group',
-      'message' => 'Each Multipage element needs to have a parent Multipage group element.',
+      'message' => 'Each <em>Multipage</em> element needs to have a parent <em>Multipage group</em> element.',
     ),
     'htab' => array(
       'parent' => 'htabs',
-      'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
+      'message' => 'Each <em>Horizontal tab</em> element needs to have a parent <em>Horizontal tabs</em> group element.',
     ),
     'accordion-item' => array(
       'parent' => 'accordion',
-      'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
+      'message' => 'Each <em>Accordion item</em> element needs to have a parent <em>Accordion group</em> element.',
     ),
   );
 
@@ -1005,7 +1005,13 @@ function field_group_field_group_field_ui_parent_requirements_alter(&$parent_req
   if ($context['display_overview']) {
     $parent_requirements['tab'] = array(
       'parent' => 'tabs',
-      'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
+      'message' => 'Each <em>Vertical tab</em> element needs to have a parent <em>Vertical tabs</em> group element.',
+    );
+  }
+  else {
+    $parent_requirements['tab'] = array(
+      'parent' => 'tabs',
+      'message' => 'A <em>Vertical tab</em> element without a parent will be shown in the <em>Additional settings</em> tab group. If this was unintended, create a new parent <em>Vertical tabs</em> group element.',
     );
   }
 }
