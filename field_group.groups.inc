@@ -809,7 +809,7 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
         '#title' => t('Other'),
         '#type' => 'textfield',
         '#default_value' => isset($group->format_settings['instance_settings']['wrapper_other']) ? $group->format_settings['instance_settings']['wrapper_other'] : $formatter['instance_settings']['wrapper_other'],
-        '#description' => t('E.g. P, SPAN, etc.'),
+        '#description' => t('For example: p, span'),
         '#weight' => 1,
         '#states' => array(
           'visible' => array(
