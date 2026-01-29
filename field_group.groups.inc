@@ -801,7 +801,7 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
       $form['instance_settings']['wrapper'] = array(
         '#title' => t('Wrapper tag'),
         '#type' => 'select',
-        '#options' => array('section' => t('SECTION'), 'article' => t('ARTICLE'), 'header' => t('HEADER'), 'footer' => t('FOOTER'), 'aside' => t('ASIDE'), 'div' => t('DIV'), 'other' => t('Other')),
+        '#options' => array('section' => t('Section'), 'article' => t('Article'), 'header' => t('Header'), 'footer' => t('Footer'), 'aside' => t('Aside'), 'div' => t('Div'), 'other' => t('Other')),
         '#default_value' => isset($group->format_settings['instance_settings']['wrapper']) ? $group->format_settings['instance_settings']['wrapper'] : 'section',
       );
 
