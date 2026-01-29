@@ -860,21 +860,26 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
         '#type' => 'select',
         '#options' => array('h2' => t('Header 2'), 'h3' => t('Header 3')),
         '#default_value' => isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : $formatter['instance_settings']['label_element'],
-        '#weight' => 2,
+        '#weight' => 3,
+        '#states' => array(
+          'visible' => array(
+            'select[name="fields[' . $group->group_name . '][format_settings][settings][instance_settings][show_label]"]' => array('value' => 1),
+          ),
+        ),
       );
       $form['instance_settings']['effect'] = array(
         '#title' => t('Effect'),
         '#type' => 'select',
         '#options' => array('none' => t('None'), 'blind' => t('Blind')),
         '#default_value' => isset($group->format_settings['instance_settings']['effect']) ? $group->format_settings['instance_settings']['effect'] : $formatter['instance_settings']['effect'],
-        '#weight' => 3,
+        '#weight' => 4,
       );
       $form['instance_settings']['speed'] = array(
         '#title' => t('Speed'),
         '#type' => 'select',
         '#options' => array('none' => t('None'), 'slow' => t('Slow'), 'fast' => t('Fast')),
         '#default_value' => isset($group->format_settings['instance_settings']['speed']) ? $group->format_settings['instance_settings']['speed'] : $formatter['instance_settings']['speed'],
-        '#weight' => 3,
+        '#weight' => 5,
       );
       break;
     case 'fieldset':
