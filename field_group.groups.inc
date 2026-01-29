@@ -6,6 +6,8 @@
 
 /**
  * Field group formatters.
+ *
+ * @see field_group_field_group_formatter_info()
  */
 function _field_group_field_group_formatter_info() {
 
@@ -508,7 +510,7 @@ function _field_group_field_group_format_settings_alter(&$form, &$group) {
  *
  * @see field_group_field_group_build_pre_render_alter().
  */
-function _field_group_extra_field_group_build_pre_render_alter(&$element) {
+function _field_group_field_group_build_pre_render_alter(&$element) {
   // Add the default field_group javascript.
   $element['#attached']['js'][] = backdrop_get_path('module', 'field_group') . '/js/field_groups.js';
 }
