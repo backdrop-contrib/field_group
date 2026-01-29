@@ -8,7 +8,10 @@
  *
  */
 
-require_once 'field_group.groups.inc';
+require_once dirname(__FILE__) . '/field_group.groups.inc';
+
+// Extra group format types.
+require_once dirname(__FILE__) . '/extra/field_group.groups.inc';
 
 /**
  * Implements hook_config_info().
@@ -1182,4 +1185,53 @@ function _field_group_preserve_shared_instance_settings($new_instances, $origina
     }
   }
   return $new_instances;
+}
+
+/**
+ * Implements hook_field_group_formatter_info().
+ */
+function field_group_field_group_formatter_info() {
+  $formatters = _field_group_field_group_formatter_info();
+  // Extra formats.
+  $extra_formatters = _field_group_extra_field_group_formatter_info();
+  return array(
+    'form' => $formatters['form'] + $extra_formatters['form'],
+    'display' => $formatters['display'] + $extra_formatters['display'],
+  );
+}
+
+/**
+ * Implements hook_field_group_format_settings_alter().
+ */
+function field_group_field_group_format_settings_alter(&$form, &$group) {
+  _field_group_field_group_format_settings_alter($form, $group);
+  // Extra formats.
+  _field_group_extra_field_group_format_settings_alter($form, $group);
+}
+
+/**
+ * Implements hook_field_group_build_pre_render_alter().
+ */
+function field_group_field_group_build_pre_render_alter(&$element) {
+  _field_group_field_group_build_pre_render_alter($element);
+  // Extra formats.
+  _field_group_extra_field_group_build_pre_render_alter($element);
+}
+
+/**
+ * Implements hook_field_group_field_ui_parent_requirements_alter().
+ */
+function field_group_field_group_field_ui_parent_requirements_alter(&$parent_requirements, &$context) {
+  _field_group_field_group_field_ui_parent_requirements_alter($parent_requirements, $context);
+  // Extra formats.
+  _field_group_extra_field_group_field_ui_parent_requirements_alter($parent_requirements, $context);
+}
+
+/**
+ * Implements hook_field_group_html_classes_alter().
+ */
+function field_group_field_group_html_classes_alter(&$classes, &$group) {
+  _field_group_field_group_html_classes_alter($classes, $group);
+  // Extra formats.
+  _field_group_extra_field_group_html_classes_alter($classes, $group);
 }
