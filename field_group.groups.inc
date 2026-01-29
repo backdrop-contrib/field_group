@@ -14,7 +14,7 @@ function field_group_field_group_formatter_info() {
       'html-element' => array(
         'label' => t('HTML element'),
         'description' => t('This fieldgroup renders the inner content in a HTML element with classes and attributes.'),
-        'instance_settings' => array('wrapper' => '', 'wrapper_other' => '', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
+        'instance_settings' => array('wrapper' => '', 'wrapper_other' => 'div', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
       ),
       'div' => array(
         'label' => t('Div'),
@@ -90,7 +90,7 @@ function field_group_field_group_formatter_info() {
       'html-element' => array(
         'label' => t('HTML element'),
         'description' => t('This fieldgroup renders the inner content in a HTML element with classes and attributes.'),
-        'instance_settings' => array('wrapper' => '', 'wrapper_other' => '', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
+        'instance_settings' => array('wrapper' => '', 'wrapper_other' => 'div', 'show_label' => 0, 'label_element' => 'div', 'classes' => '', 'attributes' => '', 'required_fields' => 1, 'id' => ''),
       ),
       'div' => array(
         'label' => t('Div'),
@@ -240,7 +240,7 @@ function field_group_pre_render_details(&$element, $group, &$form) {
  *   The root element or form.
  */
 function field_group_pre_render_html_element(&$element, $group, &$form) {
-  $html_element = isset($group->format_settings['instance_settings']['element']) ? $group->format_settings['instance_settings']['element'] : 'div';
+  $html_element = isset($group->format_settings['instance_settings']['wrapper_other']) ? $group->format_settings['instance_settings']['wrapper_other'] : 'div';
   $wrapper = $group->format_settings['instance_settings']['wrapper'];
   if (!empty($wrapper) && $wrapper != 'other') {
     $html_element = $wrapper;
