@@ -85,7 +85,7 @@ function field_group_menu() {
             'access arguments' => array('administer site configuration'),
           );
 
-          // Attempt to provide a title instead of just "configure"
+          // @todo Attempt to provide a title instead of just "configure"
           $items["$path/groups/%field_group_menu"] = array(
             'load arguments' => array($entity_type, $bundle_arg, $bundle_pos, '%map'),
             'title callback' => 'field_group_menu_title',
@@ -136,6 +136,7 @@ function field_group_menu() {
  */
 function field_group_menu_title($instance) {
   //return $instance['label'];
+  // @todo get the label somehow.
   return 'configure';
 }
 
@@ -568,7 +569,7 @@ function field_group_remove_empty_display_groups(&$element, $groups) {
  */
 function field_group_field_group_format_summary($group) {
 
-  $group_form = module_invoke_all('field_group_format_settings', $group);
+  $group_form = (array) module_invoke_all('field_group_format_settings', $group);
 
   backdrop_alter('field_group_format_settings', $group_form, $group);
 
@@ -585,6 +586,15 @@ function field_group_field_group_format_summary($group) {
       }
 
       $output .= '<strong>' . $key . '</strong> ';
+
+      // @todo only for display mode?
+      if (isset($group_form['instance_settings'], $group_form['instance_settings'][$key]['#options'])) {
+        if (is_array($value)) {
+          $value = implode(', ', array_filter($value));
+        } else {
+          $value = $group_form['instance_settings'][$key]['#options'][$value];
+        }
+      }
 
       // Shorten the string.
       if (backdrop_strlen($value) > 38) {
@@ -815,7 +825,7 @@ function field_group_formatter_info() {
     }
     else {
       $formatters = array();
-      $formatters += module_invoke_all('field_group_formatter_info');
+      $formatters += (array) module_invoke_all('field_group_formatter_info');
       $hidden_region = array(
         'label' => '<' . t('Hidden') . '>',
         'description' => '',
