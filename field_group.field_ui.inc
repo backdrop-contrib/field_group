@@ -212,11 +212,6 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
         ),
       );
 
-      $operations['configure']['href'] = $params->admin_path . '/groups/' . $name . '/configure/' . $params->mode;
-      $operations['configure']['query']['destination'] = $destination . '/display/' . $params->mode;
-      $operations['delete']['href'] = $params->admin_path . '/groups/' . $name . '/delete/' . $params->mode;
-      $operations['delete']['query']['destination'] = $destination . '/display/' . $params->mode;
-
       // Add the operations.
       $table[$name]['operations'] = array(
         '#type' => 'dropbutton',
