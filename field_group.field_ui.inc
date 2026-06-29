@@ -883,7 +883,6 @@ function field_group_field_info_max_weight($entity_type, $bundle, $context) {
  *   A form render array.
  */
 function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form') {
-
   $form['#group'] = $group;
   $admin_path = _field_group_get_admin_path($group->entity_type, $group->bundle, $view_mode);
   $form['#redirect'] = array($admin_path);
@@ -899,8 +898,6 @@ function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form
 
 /**
  * Submit handler for removing a group.
- *
- * @todo should this a conditional submit handler?
  */
 function field_group_delete_form_submit($form, &$form_state) {
   $group = $form['#group'];

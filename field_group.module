@@ -128,7 +128,7 @@ function field_group_menu() {
 }
 
 /**
- * Title callback: Returns the name of a given instance.
+ * Title callback for configure form.
  *
  * @param object $group
  *   Group definition.
@@ -138,7 +138,7 @@ function field_group_menu() {
  * @see field_group_menu()
  */
 function field_group_menu_configure_title($group) {
-  return 'Configure ' . $group->label;
+  return t('Configure @label', array('@label' => $group->label));
 }
 
 /**
