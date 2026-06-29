@@ -231,6 +231,7 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
         '#type' => 'select',
         '#options' => $formatter_options,
         '#default_value' => 'fieldset',
+        '#description' => t('Groups can have unlimited nesting.'),
         '#prefix' => '<div class="add-new-placeholder">&nbsp;</div>',
       ),
       '#cell_attributes' => array('colspan' => 2),
@@ -335,7 +336,7 @@ function field_group_add_row($name, $parent_options, $params) {
     ),
     'weight' => array(
       '#type' => 'textfield',
-      '#default_value' => field_info_max_weight($params->entity_type, $params->bundle, $params->mode) + 3,
+      '#default_value' => (int) field_info_max_weight($params->entity_type, $params->bundle, $params->mode) + 3,
       '#size' => 3,
       '#title_display' => 'invisible',
       '#title' => t('Weight for new group'),
@@ -401,7 +402,7 @@ function field_group_format_settings_form(&$group) {
     '#weight' => -5,
     '#element_validate' => array('field_group_format_settings_label_validate'),
   );
-  $addition = module_invoke_all('field_group_format_settings', $group);
+  $addition = (array) module_invoke_all('field_group_format_settings', $group);
 
   backdrop_alter('field_group_format_settings', $addition, $group);
 
@@ -464,8 +465,24 @@ function field_group_formatter_settings_update(&$group, $settings) {
 
   // For format changes we load the defaults.
   if (empty($settings['format_settings']['settings'])) {
+    $original_formatter_settings = $group->format_settings;
     $mode = $group->mode == 'form' ? 'form' : 'display';
     $group->format_settings = _field_group_get_default_formatter_settings($group->format_type, $mode);
+    // If the format type is changed, make sure we carry over the unique
+    // changes such as classes, ids.
+    $group->format_settings['instance_settings'] = _field_group_preserve_shared_instance_settings($group->format_settings['instance_settings'], $original_formatter_settings['instance_settings']);
+    // Classes are a special case. Need to parse and change "field-group-TYPE"
+    // to the new format type.
+    if (!empty($group->format_settings['instance_settings']['classes'])) {
+      $classes = explode(' ', $group->format_settings['instance_settings']['classes']);
+      foreach ($classes as $class_key => $class) {
+        if (substr($class, 0, 12) === 'field-group-') {
+          $classes[$class_key] = 'field-group-' . $group->format_type;
+        }
+      }
+      $group->format_settings['instance_settings']['classes'] = implode(' ', $classes);
+    }
+
   }
   else {
     $group->format_type = $settings['format']['type'];
@@ -486,7 +503,7 @@ function field_group_formatter_settings_update(&$group, $settings) {
  *   Array of summary ready to be rendered.
  */
 function field_group_format_settings_summary($group_name, $group) {
-  $summary = implode('<br />', module_invoke_all('field_group_format_summary', $group));
+  $summary = implode('<br />', (array) module_invoke_all('field_group_format_summary', $group));
   return array(
     '#markup' => '<div class="field-formatter-summary">' . $summary . '</div>',
     '#cell_attributes' => array('class' => array('field-formatter-summary-cell')),
@@ -804,7 +821,7 @@ function field_group_configure_form($form, &$form_state, $group, $view_mode = 'f
     '#element_validate' => array('field_group_format_settings_label_validate'),
   );
 
-  $addition = module_invoke_all('field_group_format_settings', $group);
+  $addition = (array) module_invoke_all('field_group_format_settings', $group);
   $form += $addition;
 
   // Give fieldgroup implementations the chance to alter the description.
@@ -914,7 +931,7 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
     '#type' => 'fieldset',
     '#title' => t('Fieldgroups'),
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
     '#parents' => array('additional_settings'),
   );
   $form['additional_settings']['field_group']['fieldgroup_clone'] = array(
@@ -929,14 +946,6 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
     '#value' => t('Clone'),
     '#validate' => array('field_group_field_ui_clone_field_groups_validate'),
     '#submit' => array('field_group_field_ui_clone_field_groups')
-  );
-  $form['additional_settings']['field_group']['help_title'] = array(
-    '#type' => 'item',
-    '#title' => t('Configuring fieldgroups'),
-  );
-  $form['additional_settings']['field_group']['help'] = array(
-    '#type' => 'help',
-    '#markup' => t('<p>Fields can be dragged into groups with unlimited nesting. Each Fieldgroup format comes with a configuration form, specific for that format type.</p><p>Some formats come in pairs. These types have an HTML wrapper to nest its fieldgroup children. For example, place accordion items into the accordion; vertical tabs into the vertical tab group; and horizontal tabs into the horizontal tab group. There is one exception to this rule: you can use a vertical tab without a wrapper when the additional settings tabs are available, such as with content type forms.</p>'),
   );
 
 }
@@ -953,19 +962,27 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
 function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
 
   $source_mode = $form_state['#source_mode'] = $form_state['values']['additional_settings']['fieldgroup_clone'] == '0' ? 'form' : $form_state['values']['additional_settings']['fieldgroup_clone'];
-  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type));
+  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type, 'mode' => $source_mode));
 
   $form_state['#source_groups'] = array();
+  // @todo this is probably not necessary since field_group_read_groups already filters by these.
   if (!empty($groups_to_clone) && isset($groups_to_clone[$form_state['field_group_params']->entity_type], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode])) {
     $form_state['#source_groups'] = $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode];
   }
 
   // Check for types are not known in current mode.
-  if ($form_state['field_group_params']->mode != 'form') {
-    $non_existing_types = array('multipage', 'multipage-group');
-  }
-  else {
-    $non_existing_types = array('div');
+  $non_existing_types = array('div');
+  backdrop_alter('field_group_mode_types_excluded', $non_existing_types, $form_state['field_group_params']->mode);
+
+  if (!empty($form_state['#source_groups'])) {
+    $field_instances = field_info_instances($form_state['field_group_params']->entity_type, $form_state['field_group_params']->bundle);
+    $visible_fields = array();
+    foreach ($field_instances as $field_name => $field_instance) {
+      if ($form_state['field_group_params']->mode == 'form' || $field_instance['display'][$form_state['field_group_params']->mode]['type'] != 'hidden') {
+        $visible_fields[] = $field_name;
+      }
+    }
+    $form_state['#visible_fields'] = $visible_fields;
   }
 
   foreach ($form_state['#source_groups'] as $key => $group) {
@@ -994,12 +1011,9 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
  */
 function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
-  $source_mode = $form_state['#source_mode'];
-  $groups_to_clone = $form_state['#groups_to_clone'];
-
   $fields = array_keys($form_state['values']['fields']);
-  if (!empty($form_state['#source_groups'])) {
 
+  if (!empty($form_state['#source_groups'])) {
     foreach ($form_state['#source_groups'] as $source_group) {
       if (in_array($source_group->group_name, $fields)) {
         backdrop_set_message(t('Fieldgroup @group is not cloned since a group already exists with the same name.', array('@group' => $source_group->group_name)), 'warning');
@@ -1008,7 +1022,7 @@ function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
       // Reset
       $source_group->mode = $form_state['field_group_params']->mode;
-      $source_group->children = array();
+      $source_group->children = array_intersect($source_group->children, $form_state['#visible_fields']);
 
       field_group_group_save($source_group, TRUE);
 
