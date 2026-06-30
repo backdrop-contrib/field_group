@@ -11,11 +11,8 @@ Available group types:
 
 * Fieldsets
 * [HTML Details](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
-* Horizontal tabs
 * Vertical tabs
-* Accordions
 * Divs
-* Multipage steps: (Note: This is only client side.)
 * HTML5 group type
 * Html element
 
