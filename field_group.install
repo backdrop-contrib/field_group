@@ -137,7 +137,7 @@ function field_group_update_1002() {
 
   if ($extras_enabled) {
     if ($extras_module === FALSE) {
-      backdrop_set_message(t('The <em>Accordion</em>, <em>Horizontal tabs</em>, and <em>Multipage</em> field group types have been moved out of the Field Group module. The contrib module %module should be downloaded and enabled to ensure the existing field groups continue to work properly.', array('%module' => 'Field Group Extra')));
+      backdrop_set_message(t('The <em>Accordion</em>, <em>Horizontal tabs</em>, and <em>Multipage</em> field group types have been moved out of the Field Group module. The contrib module !module should be downloaded and enabled to ensure the existing field groups continue to work properly.', array('!module' => l('Field Group Extra', 'https://backdropcms.org/project/field_group_extra'))));
     }
     elseif (!$extras_module) {
       // Module exists but isn't enabled.
