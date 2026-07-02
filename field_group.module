@@ -1249,7 +1249,7 @@ function _field_group_preserve_shared_instance_settings(array $new_instances, ar
  * Implements hook_field_group_formatter_info().
  */
 function field_group_field_group_formatter_info() {
-  // Formatters: html-element, div, fieldset, details, vertical tabs.
+  // Formatters: div, fieldset, details, vertical tabs.
   $formatters = _field_group_field_group_formatter_info();
   return array(
     'form' => $formatters['form'],
@@ -1261,7 +1261,7 @@ function field_group_field_group_formatter_info() {
  * Implements hook_field_group_format_settings_alter().
  */
 function field_group_field_group_format_settings_alter(&$form, &$group) {
-  // Formatters: html-element, div, fieldset, details, vertical tabs.
+  // Formatters: div, fieldset, details, vertical tabs.
   _field_group_field_group_format_settings_alter($form, $group);
 }
 
@@ -1269,7 +1269,7 @@ function field_group_field_group_format_settings_alter(&$form, &$group) {
  * Implements hook_field_group_build_pre_render_alter().
  */
 function field_group_field_group_build_pre_render_alter(&$element) {
-  // Formatters: html-element, div, fieldset, details, vertical tabs.
+  // Formatters: div, fieldset, details, vertical tabs.
   _field_group_field_group_build_pre_render_alter($element);
 }
 
@@ -1277,7 +1277,7 @@ function field_group_field_group_build_pre_render_alter(&$element) {
  * Implements hook_field_group_field_ui_parent_requirements_alter().
  */
 function field_group_field_group_field_ui_parent_requirements_alter(&$parent_requirements, &$context) {
-  // Formatters: html-element, div, fieldset, details, vertical tabs.
+  // Formatters: div, fieldset, details, vertical tabs.
   _field_group_field_group_field_ui_parent_requirements_alter($parent_requirements, $context);
 }
 
@@ -1285,6 +1285,6 @@ function field_group_field_group_field_ui_parent_requirements_alter(&$parent_req
  * Implements hook_field_group_html_classes_alter().
  */
 function field_group_field_group_html_classes_alter(&$classes, &$group) {
-  // Formatters: html-element, div, fieldset, details, vertical tabs.
+  // Formatters: div, fieldset, details, vertical tabs.
   _field_group_field_group_html_classes_alter($classes, $group);
 }
