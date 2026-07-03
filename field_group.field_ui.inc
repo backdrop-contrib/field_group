@@ -820,20 +820,25 @@ function field_group_field_overview_submit(array $form, array &$form_state) {
     $group->parent_name = $form_values[$group_name]['parent'];
     $group->weight = $form_values[$group_name]['weight'];
 
-    $old_format_type = $group->format_type;
-    $group->format_type = isset($form_values[$group_name]['format']['type']) ? $form_values[$group_name]['format']['type'] : 'visible';
-    if (isset($form_state['field_group'][$group_name]->format_settings)) {
-      $group->format_settings = $form_state['field_group'][$group_name]->format_settings;
+    if ($mode != 'form') {
+      // On Manage fields the format type can only be changed on a separate
+      // form.
+      $old_format_type = $group->format_type;
+      $group->format_type = isset($form_values[$group_name]['format']['type']) ? $form_values[$group_name]['format']['type'] : 'visible';
+      if (isset($form_state['field_group'][$group_name]->format_settings)) {
+        $group->format_settings = $form_state['field_group'][$group_name]->format_settings;
+      }
+
+      // If the format type is changed, make sure we have all required format
+      // settings.
+      if ($group->format_type != $old_format_type) {
+        $mode = $group->mode == 'form' ? 'form' : 'display';
+        $default_formatter_settings = _field_group_get_default_formatter_settings($group->format_type, $mode);
+        $group->format_settings += $default_formatter_settings;
+        $group->format_settings['instance_settings'] += $default_formatter_settings['instance_settings'];
+      }
     }
 
-    // If the format type is changed, make sure we have all required format
-    // settings.
-    if ($group->format_type != $old_format_type) {
-      $mode = $group->mode == 'form' ? 'form' : 'display';
-      $default_formatter_settings = _field_group_get_default_formatter_settings($group->format_type, $mode);
-      $group->format_settings += $default_formatter_settings;
-      $group->format_settings['instance_settings'] += $default_formatter_settings['instance_settings'];
-    }
     field_group_group_save($group, FALSE);
   }
 
