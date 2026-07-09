@@ -68,6 +68,9 @@ function _field_group_extra_status() {
   foreach ($field_groups as $field_group) {
     $config = config($field_group);
     if (in_array($config->get('format_type'), $extra_types)) {
+      if ($config->get('format_type') == 'div' && $config->get('format_settings.formatter') == 'open') {
+        continue;
+      }
       $extras_enabled = TRUE;
       break;
     }
@@ -141,17 +144,9 @@ function field_group_update_1001() {
 
 /**
  * Warn that field_group_extra module needs to be downloaded and installed
- * if Accordion, Horizontal Tabs, and Multipage types are enabled.
+ * if Accordion, Div, Horizontal Tabs, and Multipage types are enabled.
  */
 function field_group_update_1002() {
-  // Empty in favour of field_group_update_1003().
-}
-
-/**
- * Warn that field_group_extra module needs to be downloaded and installed
- * if Accordion, Div, Horizonal Tabs, and Multipage types are enabled.
- */
-function field_group_update_1003() {
   list($extras_module, $extras_enabled) = _field_group_extra_status();
 
   if ($extras_enabled) {
@@ -188,6 +183,30 @@ function field_group_update_1003() {
       else {
         $field_group_config->set('format_settings.instance_settings.label_element_other', '');
       }
+    }
+    $field_group_config->save();
+  }
+}
+
+/**
+ * Merge Div format type into the HTML Element format type, if it is simple.
+ * That is, if the display is not set to collapsible or collapsed, it can be
+ * safely converted.
+ */
+function field_group_update_1004() {
+  $config_names = config_get_names_with_prefix('field_group.field_group.');
+  foreach ($config_names as $config_name) {
+    $field_group_config = config($config_name);
+    if ($field_group_config->get('format_type') == 'div' && $field_group_config->get('formatter') != 'open') {
+      $field_group_config->set('format_type', 'html-element');
+      $field_group_config->set('format_settings.instance_settings.wrapper', 'div');
+      $field_group_config->set('format_settings.instance_settings.wrapper_other', '');
+      $field_group_config->set('format_settings.instance_settings.label_element_other', '');
+
+      // Clear unused settings.
+      $field_group_config->clear('format_settings.formatter');
+      $field_group_config->clear('format_settings.instance_settings.effect');
+      $field_group_config->clear('format_settings.instance_settings.speed');
     }
     $field_group_config->save();
   }
