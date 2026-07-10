@@ -189,15 +189,14 @@ function field_group_update_1003() {
 }
 
 /**
- * Merge Div format type into the HTML Element format type, if it is simple.
- * That is, if the display is not set to collapsible or collapsed, it can be
- * safely converted.
+ * Merge Div format type into the HTML Element format type, if the display is
+ * not set to collapsible or collapsed. It can be safely converted.
  */
 function field_group_update_1004() {
   $config_names = config_get_names_with_prefix('field_group.field_group.');
   foreach ($config_names as $config_name) {
     $field_group_config = config($config_name);
-    if ($field_group_config->get('format_type') == 'div' && $field_group_config->get('formatter') != 'open') {
+    if ($field_group_config->get('format_type') == 'div' && $field_group_config->get('format_settings.formatter') == 'open') {
       $field_group_config->set('format_type', 'html-element');
       $field_group_config->set('format_settings.instance_settings.wrapper', 'div');
       $field_group_config->set('format_settings.instance_settings.wrapper_other', '');
