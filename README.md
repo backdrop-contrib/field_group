@@ -1,6 +1,8 @@
 Field Group
 ===========
 
+**Important note: Field Group module was moved into Backdrop core in version 1.35.0. Use of this module is no longer necessary and no further changes will be made here. If you would like to report a bug or feature request against this module, file an issue in the main Backdrop CMS core repository at https://github.com/backdrop/backdrop-issues.**
+
 This module will group a set of fields with different HTML wrappers on the
 content type form and/or view. You can add field groups in several types with
 their own format settings.
